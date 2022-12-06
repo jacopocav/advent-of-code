@@ -1,15 +1,14 @@
-package ceejay.advent._02
+package ceejay.advent.day02
 
-import ceejay.advent.util.InputUtils
+import ceejay.advent.util.InputFile
 
 fun main() {
     Part1()
 }
 
 object Part1 {
-    private const val inputFile = "02-RockPaperScissors.txt"
     operator fun invoke() {
-        val inputString = InputUtils.read(inputFile)
+        val inputString = InputFile("02-RockPaperScissors.txt")
         val totalScore = inputString.split("\n")
             .filter { it.isNotBlank() }
             .sumOf { scoreRow(it) }
@@ -18,8 +17,8 @@ object Part1 {
 
     private fun scoreRow(row: String): Int {
         val symbols = row.split(" ")
-        val opponent = parseLeft(symbols[0])
-        val mine = parseRight(symbols[1])
-        return scoreOf(opponent, mine)
+        val opponent = Hand.findByOpponentCode(symbols[0])
+        val mine = Hand.findByMyCode(symbols[1])
+        return mine.scoreAgainst(opponent)
     }
 }
