@@ -3,10 +3,10 @@ package ceejay.advent.day09
 import ceejay.advent.util.InputFile
 
 fun main() {
-    println(Part1())
+    println(Part2())
 }
 
-object Part1 {
+object Part2 {
     operator fun invoke(): Int {
         val input = InputFile("09-Ropes.txt")
 
@@ -14,7 +14,7 @@ object Part1 {
             .filter { it.isNotBlank() }
             .flatMap { MovementParser.parseLine(it) }
 
-        return with(MovementTracker(2)) {
+        return with(MovementTracker(10)) {
             trackMovements(unitMovements)
             getPositionsVisitedByTail()
         }.count()
