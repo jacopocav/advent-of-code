@@ -8,4 +8,8 @@ object InputFile {
     operator fun invoke(name: String): String {
         return Files.readString(basePath.resolve(name))
     }
+
+    fun <T> withLines(name: String, block: (Sequence<String>) -> T): T {
+        return basePath.resolve(name).toFile().useLines(block = block)
+    }
 }
