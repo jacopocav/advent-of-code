@@ -8,6 +8,12 @@ object NoOp : Command {
     override val clocks = 1
 }
 
-data class AddX(val amount: Int) : Command {
-    override val clocks = 2
+@JvmInline
+value class AddX(val amount: Int) : Command {
+    override val clocks
+        get() = 2
+
+    companion object {
+        const val register = "X"
+    }
 }

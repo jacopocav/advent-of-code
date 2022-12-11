@@ -8,9 +8,11 @@ fun main() {
 
 object Part1 {
     operator fun invoke(): Int {
+        val snapshotter = Snapshotter(20, 60, 100, 140, 180, 220)
+
         val cpu = Cpu(
-            startingRegisters = mapOf("X" to 1),
-            snapshotClocks = setOf(20, 60, 100, 140, 180, 220)
+            startingRegisters = mapOf(AddX.register to 1),
+            components = listOf(snapshotter)
         )
 
         InputFile.withLines("10-Cpu.txt") { lines ->
@@ -19,12 +21,12 @@ object Part1 {
                 .forEach { cpu.run(it) }
         }
 
-        return cpu.getSnapshots()
+        return snapshotter.snapshots
             .map { (clock, registers) -> getIntensity(clock, registers) }
             .sum()
     }
 
-    fun getIntensity(clockOrdinal: Int, registers: Map<String, Int>): Int {
+    private fun getIntensity(clockOrdinal: Int, registers: Map<String, Int>): Int {
         return clockOrdinal * (registers["X"] ?: 0)
     }
 }
