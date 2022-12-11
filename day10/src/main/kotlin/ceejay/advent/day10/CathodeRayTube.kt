@@ -5,7 +5,7 @@ import ceejay.advent.util.InputFile
 fun main() {
     println("Part 1 Result: ${part1()}")
     println("Part 2 Result:")
-
+    println(part2())
 }
 
 fun part1(): Int {
