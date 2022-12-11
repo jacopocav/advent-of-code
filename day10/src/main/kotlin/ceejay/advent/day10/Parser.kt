@@ -1,6 +1,6 @@
 package ceejay.advent.day10
 
-object Parser {
+internal object Parser {
     fun parse(line: String): Command {
         val split = line.split(" ")
 

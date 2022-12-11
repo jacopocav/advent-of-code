@@ -1,15 +1,15 @@
 package ceejay.advent.day10
 
-sealed interface Command {
+internal sealed interface Command {
     val clocks: Int
 }
 
-object NoOp : Command {
+internal object NoOp : Command {
     override val clocks = 1
 }
 
 @JvmInline
-value class AddX(val amount: Int) : Command {
+internal value class AddX(val amount: Int) : Command {
     override val clocks
         get() = 2
 

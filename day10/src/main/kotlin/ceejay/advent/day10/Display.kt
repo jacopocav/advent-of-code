@@ -3,11 +3,11 @@ package ceejay.advent.day10
 import ceejay.advent.util.isOdd
 import kotlin.math.abs
 
-class Display(
+internal class Display(
     private val width: Int,
     height: Int,
     private val spriteRegister: String,
-    private val spriteWidth: Int
+    private val spriteWidth: Int,
 ) : Component {
     private val pixels: BooleanArray
     private var currentPixel: Int
@@ -34,12 +34,11 @@ class Display(
         currentPixel++
     }
 
-    override fun toString(): String = pixels
-        .joinToString(separator = "") { pixelToString(it) }
+    fun toString(onChar: Char, offChar: Char): String = pixels
+        .joinToString(separator = "") { pixelToChar(it, onChar, offChar).toString() }
         .windowed(size = width, step = width)
         .joinToString(separator = "\n")
 
-    companion object {
-        private fun pixelToString(active: Boolean): String = if (active) "#" else "."
-    }
+    private fun pixelToChar(active: Boolean, onChar: Char, offChar: Char): Char =
+        if (active) onChar else offChar
 }

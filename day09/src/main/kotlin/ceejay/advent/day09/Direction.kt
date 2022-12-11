@@ -1,6 +1,6 @@
 package ceejay.advent.day09
 
-enum class Direction(val code: String, val diff: Position) {
+internal enum class Direction(val code: String, val diff: Position) {
     RIGHT("R", Position(0, 1)),
     LEFT("L", Position(0, -1)),
     UP("U", Position(1, 0)),

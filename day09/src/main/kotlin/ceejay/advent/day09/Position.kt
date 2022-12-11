@@ -2,7 +2,7 @@ package ceejay.advent.day09
 
 import kotlin.math.abs
 
-data class Position(val row: Int, val column: Int) {
+internal data class Position(val row: Int, val column: Int) {
     operator fun plus(other: Position): Position {
         return Position(row + other.row, column + other.column)
     }
