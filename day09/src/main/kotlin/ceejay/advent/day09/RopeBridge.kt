@@ -7,24 +7,15 @@ fun main() {
     println("Part 2 Result: ${part2()}")
 }
 
-internal fun part1(): Int {
+fun part1(): Int = run(2)
+
+fun part2(): Int = run(10)
+
+private fun run(knotNum: Int): Int {
     return InputFile.withLines {
-        val unitMovements = filter { it.isNotBlank() }
-            .flatMap { MovementParser.parseLine(it) }
+        val unitMovements = flatMap { MovementParser.parseLine(it) }
 
-        with(MovementTracker(2)) {
-            trackMovements(unitMovements)
-            getPositionsVisitedByTail()
-        }.count()
-    }
-}
-
-fun part2(): Int {
-    return InputFile.withLines {
-        val unitMovements = filter { it.isNotBlank() }
-            .flatMap { MovementParser.parseLine(it) }
-
-        with(MovementTracker(10)) {
+        with(MovementTracker(knotNum)) {
             trackMovements(unitMovements)
             getPositionsVisitedByTail()
         }.count()

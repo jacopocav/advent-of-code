@@ -9,8 +9,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/day01" />
+            <option value="$PROJECT_DIR$/day02" />
+            <option value="$PROJECT_DIR$/day03" />
+            <option value="$PROJECT_DIR$/day04" />
+            <option value="$PROJECT_DIR$/day05" />
+            <option value="$PROJECT_DIR$/day06" />
+            <option value="$PROJECT_DIR$/day07" />
+            <option value="$PROJECT_DIR$/day08" />
             <option value="$PROJECT_DIR$/day09" />
             <option value="$PROJECT_DIR$/day10" />
           </set>
