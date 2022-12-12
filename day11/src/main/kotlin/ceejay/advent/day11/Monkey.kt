@@ -1,6 +1,7 @@
 package ceejay.advent.day11
 
 import ceejay.advent.util.Debuggable
+import ceejay.advent.util.Debuggable.Companion.debug
 
 internal data class Monkey(
     val id: Int,

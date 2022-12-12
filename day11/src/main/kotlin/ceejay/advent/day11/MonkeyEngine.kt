@@ -2,6 +2,7 @@ package ceejay.advent.day11
 
 import ceejay.advent.day11.SimpleOperation.Operator.MODULO
 import ceejay.advent.util.Debuggable
+import ceejay.advent.util.Debuggable.Companion.debug
 import java.util.*
 
 internal class MonkeyEngine(
@@ -46,10 +47,6 @@ internal class MonkeyEngine(
         debug()
     }
 
-    private fun Monkey.withModuloTrickOperation() = commonMultiple
-        ?.let { copy(operation = operation + Operation(MODULO, it)) }
-        ?: this
-
     private fun runMonkeyTurn(monkey: Monkey) {
         monkey.forEachItem {
             inspect()
@@ -65,4 +62,8 @@ internal class MonkeyEngine(
             val id = getReceiverId()
             return monkeyMap[id] ?: throw NoSuchElementException("Monkey $id")
         }
+
+    private fun Monkey.withModuloTrickOperation() = commonMultiple
+        ?.let { copy(operation = operation + Operation(MODULO, it)) }
+        ?: this
 }
