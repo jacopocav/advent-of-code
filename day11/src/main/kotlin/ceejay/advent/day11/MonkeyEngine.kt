@@ -13,11 +13,30 @@ internal class MonkeyEngine(
             values.first()
         }.toSortedMap()
 
+
+    /**
+     * Common multiple of [DivisibilityThrow.divisor] in [monkeyMap]
+     *
+     * This is used to keep numbers low after every operation (multiplication):
+     * `(multiplicationResult % commonMultiple)` has the same divisors of `multiplicationResult`
+     */
+    private val commonMultiple: Long? = if (monkeys.all { it.boredOperation.isNoOp }) {
+        // the trick only works if the boredOperation does nothing
+        monkeys
+            .asSequence()
+            .map { it.conditionalThrow }
+            .filterIsInstance<DivisibilityThrow>()
+            .map { it.divisor }
+            .distinct()
+            .fold(1L) { a, b -> a * b }
+    } else null
+
     fun run(rounds: Int) {
         repeat(rounds) { runRound(it) }
     }
 
-    fun getInspectionCounts(): List<Int> = monkeyMap.values.map { it.inspectCount }
+    val inspectionCounts: List<Long>
+        get() = monkeyMap.values.map { it.inspectCount }
 
     private fun runRound(index: Int) {
         debug { "---ROUND ${index + 1}---" }
@@ -29,7 +48,7 @@ internal class MonkeyEngine(
     private fun runMonkeyTurn(monkey: Monkey) {
         monkey.forEachItem {
             inspect()
-            operate()
+            operate(commonMultiple)
             getBored()
             throwTo(receiver)
             debug()

@@ -3,9 +3,9 @@ package ceejay.advent.day11
 import ceejay.advent.util.isDivisibleBy
 
 internal sealed interface ConditionalThrow {
-    fun getReceiverId(item: Int): Int
+    fun getReceiverId(item: Long): Int
 
-    fun test(item: Int): Boolean
+    fun test(item: Long): Boolean
 
     companion object {
         fun parse(lines: List<String>): ConditionalThrow {
@@ -28,7 +28,7 @@ internal sealed interface ConditionalThrow {
 
             if (header.startsWith("divisible by ")) {
                 val divisor = header.substringAfter("divisible by ")
-                    .toInt()
+                    .toLong()
 
                 return DivisibilityThrow(divisor, trueId, falseId)
             } else {
@@ -39,12 +39,12 @@ internal sealed interface ConditionalThrow {
 }
 
 internal data class DivisibilityThrow(
-    private val divisor: Int,
+    val divisor: Long,
     private val trueReceiverId: Int,
     private val falseReceiverId: Int
 ) : ConditionalThrow {
-    override fun getReceiverId(item: Int): Int =
+    override fun getReceiverId(item: Long): Int =
         if (test(item)) trueReceiverId else falseReceiverId
 
-    override fun test(item: Int): Boolean = item.isDivisibleBy(divisor)
+    override fun test(item: Long): Boolean = item isDivisibleBy divisor
 }

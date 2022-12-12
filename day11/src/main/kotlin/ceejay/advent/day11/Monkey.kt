@@ -4,7 +4,7 @@ import ceejay.advent.util.Debuggable
 
 internal class Monkey(
     val id: Int,
-    startingItems: List<Int>,
+    startingItems: List<Long>,
     val operation: Operation,
     val conditionalThrow: ConditionalThrow,
     val boredOperation: Operation,
@@ -12,7 +12,7 @@ internal class Monkey(
 ) : Debuggable {
     private val items =
         startingItems.map(::Item).toMutableList()
-    var inspectCount: Int = 0
+    var inspectCount: Long = 0L
         private set
 
     fun forEachItem(block: Item.() -> Unit) {
@@ -21,12 +21,12 @@ internal class Monkey(
         toBeThrown.forEach(block)
     }
 
-    fun receive(value: Int) {
+    fun receive(value: Long) {
         items += Item(value)
     }
 
     inner class Item(
-        private var value: Int
+        private var value: Long
     ) {
 
         fun inspect() {
@@ -34,9 +34,11 @@ internal class Monkey(
             inspectCount++
         }
 
-        fun operate() {
+        fun operate(commonMultiple: Long?) {
             val old = value
-            value = operation(value)
+            value = commonMultiple
+                ?.let { operation(old) % it }
+                ?: operation(old)
             debug { "Monkey $id transformed item $old to $value" }
         }
 
