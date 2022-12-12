@@ -12,7 +12,7 @@ object InputFile {
             ?: throw FileNotFoundException(name)
     }
 
-    fun <T> withLines(name: String = "input.txt", block: Sequence<String>.() -> T): T {
+    inline fun <T> withLines(name: String = "input.txt", block: Sequence<String>.() -> T): T {
         return ClassLoader.getSystemResourceAsStream(name)
             ?.let { stream -> BufferedReader(InputStreamReader(stream)) }
             ?.use { reader -> block(reader.lineSequence().filter { it.isNotBlank() }) }

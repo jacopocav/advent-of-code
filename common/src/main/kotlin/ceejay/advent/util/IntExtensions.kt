@@ -1,4 +1,5 @@
 package ceejay.advent.util
 
-fun Int.isEven() = this % 2 == 0
+fun Int.isEven() = isDivisibleBy(2)
 fun Int.isOdd() = !isEven()
+fun Int.isDivisibleBy(divisor: Int) = this % divisor == 0
