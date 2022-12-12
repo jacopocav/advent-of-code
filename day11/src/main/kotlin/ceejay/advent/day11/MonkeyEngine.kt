@@ -1,5 +1,6 @@
 package ceejay.advent.day11
 
+import ceejay.advent.day11.SimpleOperation.Operator.MODULO
 import ceejay.advent.util.Debuggable
 import java.util.*
 
@@ -7,13 +8,6 @@ internal class MonkeyEngine(
     monkeys: List<Monkey>,
     override val debugEnabled: Boolean = false
 ) : Debuggable {
-    private val monkeyMap: SortedMap<Int, Monkey> = monkeys.groupBy { it.id }
-        .mapValues { (id, values) ->
-            require(values.size == 1) { "Found multiple monkeys with id $id" }
-            values.first()
-        }.toSortedMap()
-
-
     /**
      * Common multiple of [DivisibilityThrow.divisor] in [monkeyMap]
      *
@@ -21,7 +15,7 @@ internal class MonkeyEngine(
      * `(multiplicationResult % commonMultiple)` has the same divisors of `multiplicationResult`
      */
     private val commonMultiple: Long? = if (monkeys.all { it.boredOperation.isNoOp }) {
-        // the trick only works if the boredOperation does nothing
+        // the trick only works if all boredOperations do nothing
         monkeys
             .asSequence()
             .map { it.conditionalThrow }
@@ -31,12 +25,19 @@ internal class MonkeyEngine(
             .fold(1L) { a, b -> a * b }
     } else null
 
-    fun run(rounds: Int) {
-        repeat(rounds) { runRound(it) }
-    }
+
+    private val monkeyMap: SortedMap<Int, Monkey> = monkeys.groupBy { it.id }
+        .mapValues { (id, values) ->
+            require(values.size == 1) { "Found multiple monkeys with id $id" }
+            values.first().withModuloTrickOperation()
+        }.toSortedMap()
 
     val inspectionCounts: List<Long>
         get() = monkeyMap.values.map { it.inspectCount }
+
+    fun run(rounds: Int) {
+        repeat(rounds) { runRound(it) }
+    }
 
     private fun runRound(index: Int) {
         debug { "---ROUND ${index + 1}---" }
@@ -45,10 +46,14 @@ internal class MonkeyEngine(
         debug()
     }
 
+    private fun Monkey.withModuloTrickOperation() = commonMultiple
+        ?.let { copy(operation = operation + Operation(MODULO, it)) }
+        ?: this
+
     private fun runMonkeyTurn(monkey: Monkey) {
         monkey.forEachItem {
             inspect()
-            operate(commonMultiple)
+            operate()
             getBored()
             throwTo(receiver)
             debug()

@@ -53,20 +53,16 @@ private fun String.parseMonkey(
                             .map { it.trim().toLong() }
 
                     line.startsWith(operationPrefix) ->
-                        operation = line.substringAfter(operationPrefix)
-                            .let { Operation.parse(it) }
+                        operation = Operation(line.substringAfter(operationPrefix))
 
                     line.startsWith(conditionalThrowPrefix) ->
-                        conditionalThrow = line.substringAfter(conditionalThrowPrefix)
-                            .let {
-                                ConditionalThrow.parse(
-                                    listOf(
-                                        it,
-                                        monkeyBody.removeFirst(),
-                                        monkeyBody.removeFirst()
-                                    )
-                                )
-                            }
+                        conditionalThrow = ConditionalThrow(
+                            listOf(
+                                line.substringAfter(conditionalThrowPrefix),
+                                monkeyBody.removeFirst(),
+                                monkeyBody.removeFirst()
+                            )
+                        )
                 }
             }
 

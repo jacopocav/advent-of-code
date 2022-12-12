@@ -8,7 +8,7 @@ internal sealed interface ConditionalThrow {
     fun test(item: Long): Boolean
 
     companion object {
-        fun parse(lines: List<String>): ConditionalThrow {
+        operator fun invoke(lines: List<String>): ConditionalThrow {
             require(lines.size == 3)
 
             val header = lines.first()

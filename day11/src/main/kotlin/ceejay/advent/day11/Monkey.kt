@@ -2,9 +2,9 @@ package ceejay.advent.day11
 
 import ceejay.advent.util.Debuggable
 
-internal class Monkey(
+internal data class Monkey(
     val id: Int,
-    startingItems: List<Long>,
+    val startingItems: List<Long>,
     val operation: Operation,
     val conditionalThrow: ConditionalThrow,
     val boredOperation: Operation,
@@ -34,11 +34,9 @@ internal class Monkey(
             inspectCount++
         }
 
-        fun operate(commonMultiple: Long?) {
+        fun operate() {
             val old = value
-            value = commonMultiple
-                ?.let { operation(old) % it }
-                ?: operation(old)
+            value = operation(old)
             debug { "Monkey $id transformed item $old to $value" }
         }
 

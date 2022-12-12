@@ -1,6 +1,6 @@
 package ceejay.advent.day11
 
-import ceejay.advent.day11.Operation.Operator.DIVIDE
+import ceejay.advent.day11.SimpleOperation.Operator.DIVIDE
 import ceejay.advent.util.InputFile
 
 fun main() {
@@ -13,7 +13,7 @@ fun part1() = InputFile.withLines {
 }
 
 fun part2() = InputFile.withLines {
-    run(rounds = 10_000, boredOperation = Operation.noOp)
+    run(rounds = 10_000, boredOperation = NoOp)
 }
 
 private fun Sequence<String>.run(rounds: Int, boredOperation: Operation): Long {
