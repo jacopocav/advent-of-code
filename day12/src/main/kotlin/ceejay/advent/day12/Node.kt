@@ -22,5 +22,3 @@ internal class Node(
         return id.hashCode()
     }
 }
-
-internal data class Graph(val nodes: List<Node>, val start: Node, val end: Node)
