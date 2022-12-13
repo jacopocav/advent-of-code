@@ -13,7 +13,7 @@ object Day12Test {
         val actual = part1()
 
         // then
-        then(actual).isEqualTo(0L) // TODO replace with expected result
+        then(actual).isEqualTo(490)
     }
 
     @Test
