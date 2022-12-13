@@ -6,3 +6,5 @@ inline fun <T> MutableList<T>.removeWhile(crossinline predicate: (T) -> Boolean)
             yield(removeFirst())
         }
     }.toList()
+
+fun List<Char>.composeString(): String = joinToString("")
