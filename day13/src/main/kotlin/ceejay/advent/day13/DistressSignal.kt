@@ -1,6 +1,8 @@
 package ceejay.advent.day13
 
 import ceejay.advent.util.InputFile
+import ceejay.advent.util.indicesOfAll
+import ceejay.advent.util.product
 
 fun main() {
     println("Part 1 Result: ${part1()}")
@@ -21,7 +23,9 @@ fun part2(): Int = InputFile.withLines {
     val divider2 = ListPacket(ListPacket(NumberPacket(6)))
     val additionalDividers = sequenceOf(divider1, divider2)
 
-    val sortedPackets = (PacketParser.parse(this) + additionalDividers).sorted().toList()
-
-    (sortedPackets.indexOf(divider1) + 1) * (sortedPackets.indexOf(divider2) + 1)
+    return (PacketParser.parse(this) + additionalDividers)
+        .sorted()
+        .indicesOfAll { it == divider1 || it == divider2 }
+        .map { it + 1 }
+        .product()
 }
