@@ -18,7 +18,7 @@ internal data class NumberPacket(val value: Int) : Packet {
 }
 
 internal data class ListPacket(val content: List<Packet>) : Packet {
-    constructor(numberPacket: NumberPacket) : this(listOf(numberPacket))
+    constructor(numberPacket: Packet) : this(listOf(numberPacket))
 
     override fun compareTo(other: Packet): Int = when (other) {
         is NumberPacket -> compareTo(ListPacket(other))
