@@ -9,7 +9,7 @@ internal data class Monkey(
     val operation: Operation,
     val conditionalThrow: ConditionalThrow,
     val boredOperation: Operation,
-    override val debugEnabled: Boolean = false
+    override var debugEnabled: Boolean = false
 ) : Debuggable {
     private val items =
         startingItems.map(::Item).toMutableList()

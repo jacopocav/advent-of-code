@@ -5,7 +5,6 @@ import ceejay.advent.day14.Cave.Companion.Cell.*
 
 internal class Grid {
     private val nonTraversableColumns = mutableMapOf<Int, MutableMap<Int, Cell>>()
-        .withDefault { mutableMapOf() }
     private var floorRow: Int? = null
     private val hasFloor: Boolean
         get() = floorRow != null
@@ -22,7 +21,7 @@ internal class Grid {
         nonTraversableColumns.computeIfAbsent(column) { mutableMapOf() }
 
         when (value) {
-            AIR -> nonTraversableColumns[column]!!.remove(row)
+            AIR -> nonTraversableColumns[column]!! -= row
             ROCK, SAND -> nonTraversableColumns[column]!![row] = value
         }
     }
@@ -37,9 +36,10 @@ internal class Grid {
     fun downLeftFrom(column: Int, row: Int): Cell = this[column - 1, row + 1]
     fun downRightFrom(column: Int, row: Int): Cell = this[column + 1, row + 1]
 
-    fun areAllAirBelow(column: Int, row: Int): Boolean = !hasFloor && nonTraversableColumns[column]
+    fun areAllAirBelow(column: Int, row: Int): Boolean = !hasFloor
+        && (nonTraversableColumns[column]
         ?.none { (r, _) -> r > row }
-        ?: true
+        ?: true)
 
     override fun toString(): String {
         val minColumn = nonTraversableColumns.keys.min()

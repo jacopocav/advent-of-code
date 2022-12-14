@@ -7,7 +7,7 @@ import java.util.*
 
 internal class MonkeyEngine(
     monkeys: List<Monkey>,
-    override val debugEnabled: Boolean = false
+    override var debugEnabled: Boolean = false
 ) : Debuggable {
     /**
      * Common multiple of [DivisibilityThrow.divisor] in [monkeyMap]

@@ -12,34 +12,39 @@ internal object CaveParser {
     ): Cave {
         val grid = Grid()
 
-        lines.forEach { it.parseRockPath(grid) }
+        lines.forEach { it.parseRockPath().into(grid) }
 
         floorDistance?.let { grid.addFloor(it) }
 
         return Cave(grid, sandSpawnPoint.toPair())
     }
 
-    private fun String.parseRockPath(grid: Grid) {
-        val path = split("->")
+    private fun String.parseRockPath(): Sequence<Coordinates> {
+        val path = splitToSequence("->")
             .map { it.trim() }
             .map { it.split(",") }
             .map { (col, row) -> Coordinates(col.toInt(), row.toInt()) }
 
-        path.zipWithNext()
+        return path.zipWithNext()
             .flatMap { (curr, next) -> curr.stepsTo(next) }
-            .forEach { (column, row) -> grid[column, row] = ROCK }
+    }
+
+    private fun Sequence<Coordinates>.into(grid: Grid) {
+        forEach { (column, row) -> grid[column, row] = ROCK }
     }
 
     data class Coordinates(val column: Int, val row: Int) {
         fun toPair() = Pair(column, row)
-        fun stepsTo(other: Coordinates): List<Coordinates> =
+        fun stepsTo(other: Coordinates): Sequence<Coordinates> =
             when {
                 column == other.column ->
                     (min(row, other.row)..max(row, other.row))
+                        .asSequence()
                         .map { Coordinates(column, it) }
 
                 row == other.row ->
                     (min(column, other.column)..max(column, other.column))
+                        .asSequence()
                         .map { Coordinates(it, row) }
 
                 else -> throw IllegalArgumentException("cannot step diagonally")

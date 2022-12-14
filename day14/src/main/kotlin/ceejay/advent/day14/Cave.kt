@@ -10,10 +10,9 @@ internal class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) 
         private set
 
     inline fun spawnSandUntil(predicate: (SandResult) -> Boolean) {
-        while (true) {
-            if (predicate(SandUnit().fall())) {
-                break
-            }
+        var result = SandUnit().fall()
+        while (!predicate(result)) {
+            result = SandUnit().fall()
         }
     }
 
@@ -24,6 +23,7 @@ internal class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) 
 
         private var column = sandSpawnPoint.first
         private var row = sandSpawnPoint.second
+
         fun fall(): SandResult {
             if (grid.areAllAirBelow(column, row)) {
                 return SandResult(IN_ABYSS, column, Int.MAX_VALUE)
