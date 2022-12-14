@@ -5,10 +5,16 @@ import kotlin.math.max
 import kotlin.math.min
 
 internal object CaveParser {
-    fun parse(lines: Sequence<String>, sandSpawnPoint: Coordinates = Coordinates(500, 0)): Cave {
+    fun parse(
+        lines: Sequence<String>,
+        sandSpawnPoint: Coordinates,
+        floorDistance: Int? = null
+    ): Cave {
         val grid = Grid()
 
         lines.forEach { it.parseRockPath(grid) }
+
+        floorDistance?.let { grid.addFloor(it) }
 
         return Cave(grid, sandSpawnPoint.toPair())
     }
