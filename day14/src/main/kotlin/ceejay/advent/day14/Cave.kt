@@ -24,7 +24,7 @@ internal class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) 
         private var column = sandSpawnPoint.first
         private var row = sandSpawnPoint.second
 
-        fun fall(): SandResult {
+        tailrec fun fall(): SandResult {
             if (grid.areAllAirBelow(column, row)) {
                 return SandResult(IN_ABYSS, column, Int.MAX_VALUE)
             }

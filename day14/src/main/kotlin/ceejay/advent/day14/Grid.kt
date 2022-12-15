@@ -48,9 +48,22 @@ internal class Grid {
         val maxColumn = nonTraversableColumns.keys.max()
         val maxRow = floorRow ?: nonTraversableColumns.values.maxOf { it.keys.max() }
 
+        val maxRowDigits = maxRow.toString().length
+
+        val firstLine = " ".repeat(maxRowDigits + 2) +
+            "$minColumn...".padMiddle(maxColumn - minColumn + 1, "...$maxColumn")
+
         return (minRow..maxRow)
             .map { row -> (minColumn..maxColumn).map { this[it, row].char } }
-            .joinToString("\n") { it.joinToString("") }
-            .let { "from ($minColumn, $minRow) to ($maxColumn, $maxRow)\n$it" }
+            .mapIndexed { index, row ->
+                index.toString().padStart(maxRowDigits + 1) + " " + row.joinToString("")
+            }
+            .joinToString("\n")
+            .let { "$firstLine\n$it" }
+    }
+
+    companion object {
+        private fun String.padMiddle(length: Int, end: String, padChar: Char = ' '): String =
+            padEnd(length - end.length, padChar) + end
     }
 }
