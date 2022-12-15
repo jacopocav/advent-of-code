@@ -8,7 +8,8 @@ fun main() {
 }
 
 fun part1(): Int = InputFile.withLines {
-    TODO()
+    val sensorBeacons = SensorParser.parse(this)
+    Grid(sensorBeacons).countExcludedInRow(2_000_000)
 }
 
 fun part2(): Int = InputFile.withLines {
