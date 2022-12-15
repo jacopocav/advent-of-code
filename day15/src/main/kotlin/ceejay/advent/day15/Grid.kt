@@ -2,6 +2,7 @@ package ceejay.advent.day15
 
 import ceejay.advent.util.isOdd
 import kotlin.collections.Map.Entry
+import kotlin.math.abs
 
 
 internal class Grid(sensors: Collection<SensorBeacon>) {
@@ -27,6 +28,32 @@ internal class Grid(sensors: Collection<SensorBeacon>) {
             }
             .distinct()
             .count { it !in beacons }
+
+    fun findFirstEmptyCellInRectangle(minCoordinates: Coordinates, maxCoordinates: Coordinates): Coordinates {
+        var column = minCoordinates.column
+        var row = minCoordinates.row
+
+        while (column <= maxCoordinates.column && row <= maxCoordinates.row) {
+            val coordinates = Coordinates(column = column, row = row)
+            val (sensor, range) = sensorRanges
+                .entries
+                .firstOrNull { coordinates in it }
+                ?: return coordinates
+
+            val rangeDifference =
+                range - abs(coordinates.row - sensor.row)
+            val sensorZoneWidth = 1 + 2 * rangeDifference
+            val nextCandidateColumn = sensor.column + (sensorZoneWidth / 2) + 1
+
+            column = if (nextCandidateColumn > maxCoordinates.column) {
+                row++
+                minCoordinates.column
+            } else {
+                nextCandidateColumn
+            }
+        }
+        throw IllegalArgumentException("no empty cell in range $minCoordinates - $maxCoordinates")
+    }
 
     private fun rangeCenteredAt(center: Int, width: Int): IntProgression {
         require(width.isOdd())

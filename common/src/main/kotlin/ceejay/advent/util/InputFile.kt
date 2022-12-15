@@ -1,21 +1,40 @@
 package ceejay.advent.util
 
-import java.io.BufferedReader
 import java.io.FileNotFoundException
-import java.io.InputStreamReader
 
 object InputFile {
-    operator fun invoke(name: String = "input.txt"): String {
+    const val defaultName = "input.txt"
+
+    operator fun invoke(name: String = defaultName): String {
         return ClassLoader.getSystemResourceAsStream(name)
-            ?.let { stream -> BufferedReader(InputStreamReader(stream, Charsets.UTF_8)) }
-            ?.use { reader -> reader.readText() }
+            ?.buffered()
+            ?.reader()
+            ?.readText()
             ?: throw FileNotFoundException(name)
     }
 
-    inline fun <T> withLines(name: String = "input.txt", block: Sequence<String>.() -> T): T {
-        return ClassLoader.getSystemResourceAsStream(name)
-            ?.let { stream -> BufferedReader(InputStreamReader(stream)) }
-            ?.use { reader -> block(reader.lineSequence().filter { it.isNotBlank() }) }
+    inline fun <T> useLines(
+        name: String = defaultName,
+        ignoreBlankLines: Boolean = true,
+        block: (Sequence<String>) -> T,
+    ) = withLines(name, ignoreBlankLines, block)
+
+
+    inline fun <T> withLines(
+        name: String = defaultName,
+        ignoreBlankLines: Boolean = true,
+        block: Sequence<String>.() -> T,
+    ): T {
+        val reader = ClassLoader.getSystemResourceAsStream(name)
+            ?.buffered()
+            ?.reader()
             ?: throw FileNotFoundException(name)
+
+        return reader.useLines { lines ->
+            lines.run {
+                if (ignoreBlankLines) filter { it.isNotBlank() }
+                else this
+            }.block()
+        }
     }
 }
