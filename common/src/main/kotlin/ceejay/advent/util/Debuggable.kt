@@ -1,7 +1,7 @@
 package ceejay.advent.util
 
 interface Debuggable {
-    var debugEnabled: Boolean
+    val debugEnabled: Boolean
 
     companion object {
         inline fun Debuggable.debug(lazyMessage: () -> String = { "" }) {
