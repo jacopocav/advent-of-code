@@ -1,6 +1,6 @@
 package ceejay.advent.day16
 
-internal fun Set<Valve>.prune(startValve: String): Set<Valve> {
+internal fun Iterable<Valve>.prune(startValve: String): Set<Valve> {
     val allValves = associateBy { it.name }
     val nonZeroValves = allValves.filterValues { it.flow > 0 }
 

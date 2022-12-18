@@ -22,6 +22,6 @@ object Day16Test {
         val actual = part2()
 
         // then
-        then(actual).isEqualTo(TODO("Replace with correct result"))
+        then(actual).isEqualTo(2504)
     }
 }
