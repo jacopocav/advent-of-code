@@ -14,3 +14,9 @@ fun <T> Sequence<T>.indicesOfAll(predicate: (T) -> Boolean): Sequence<Int> = wit
     .map { it.index }
 
 fun Sequence<Int>.product(): Int = fold(1) { a, b -> a * b }
+
+inline fun <T> MutableList<T>.consume(block: (T) -> Unit) {
+    while (isNotEmpty()) {
+        block(removeFirst())
+    }
+}
