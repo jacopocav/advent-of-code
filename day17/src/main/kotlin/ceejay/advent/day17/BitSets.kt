@@ -5,7 +5,7 @@ import java.util.*
 fun BitSet.padLeft(count: Int) = BitSet(size() + count)
     .also { newBitSet ->
         for (i in 0 until size()) {
-            newBitSet.set(i + count, get(i))
+            newBitSet[i + count] = get(i)
         }
     }
 
@@ -24,6 +24,8 @@ fun BitSet.shiftRight() = BitSet(size())
     }
 
 fun BitSet.copy(): BitSet = clone() as BitSet
+
+// Strings to BitSets
 fun String.toBitSet(trueChar: Char = '#'): BitSet {
     val bitSet = BitSet(length)
 

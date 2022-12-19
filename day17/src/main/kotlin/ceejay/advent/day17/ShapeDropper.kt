@@ -12,11 +12,11 @@ internal class ShapeDropper(
 ) : Debuggable {
 
     fun drop(shapeCount: Long): BitChamber {
-        var jetIndex = 0
         val bitChamber = BitChamber(width)
         val history = ArrayDeque<Drop>()
-        var shapeIndex = 0L
-        while (shapeIndex < shapeCount) {
+
+        var jetIndex = 0
+        for (shapeIndex in 0 until shapeCount) {
             val shape = shapes[(shapeIndex % shapes.size).toInt()]
             bitChamber.makeSpaceFor(shape)
 
@@ -50,10 +50,8 @@ internal class ShapeDropper(
 
             while (true) {
                 // move laterally
-                val move = jetPattern[jetIndex++]
-                if (jetIndex == jetPattern.size) {
-                    jetIndex = 0
-                }
+                val move = jetPattern[jetIndex++ % jetPattern.size]
+                jetIndex %= jetPattern.size
 
                 val shapeMatrixAfterMove = bitShape.shift(move)
 
@@ -69,7 +67,6 @@ internal class ShapeDropper(
                     break
                 }
             }
-            ++shapeIndex
         }
         debug { "--- Final situation ---" }
         debug { bitChamber.encode(BitShape.empty, 0) }
