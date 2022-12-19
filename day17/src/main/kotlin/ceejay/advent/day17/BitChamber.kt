@@ -9,21 +9,17 @@ internal class BitChamber(internalWidth: Int) {
         "#".repeat(fullWidth).toBitSet()
     )
 
-    val height: Int get() = content.size
+    val height: Long get() = content.size.toLong()
+    private var heightOffset: Long = 0
 
-    fun addEmptyRow() {
-        content += BitSet(fullWidth).apply {
-            flip(0)
-            flip(fullWidth - 1)
-        }
-    }
+    fun towerHeight(): Long = rawTowerHeight() + heightOffset
 
-    fun towerHeight(): Int = content.indexOfLast { row ->
+    private fun rawTowerHeight(): Int = content.indexOfLast { row ->
         row.nextSetBit(1) in 1..fullWidth - 2
     }
 
     fun makeSpaceFor(shape: Shape) {
-        val towerHeight = towerHeight()
+        val towerHeight = rawTowerHeight()
         val neededRows = towerHeight + 3 + shape.maxHeight + 1
 
         if (height < neededRows) {
@@ -31,24 +27,41 @@ internal class BitChamber(internalWidth: Int) {
         }
     }
 
-    fun collidesWith(shape: BitShape, offset: Int): Boolean =
-        content.subList(offset, offset + shape.height)
-            .filterIndexed { i, row -> row.intersects(shape[i]) }
-            .isNotEmpty()
-
-    fun addRestingShape(shape: BitShape, offset: Int) {
-        for (i in offset until (offset + shape.height)) {
-            content[i].or(shape[i - offset])
+    private fun addEmptyRow() {
+        content += BitSet(fullWidth).apply {
+            flip(0)
+            flip(fullWidth - 1)
         }
     }
 
-    fun encode(shape: BitShape, offset: Int): String =
-        content.mapIndexed { i, row ->
-            val orRow = if (i in offset until offset + shape.height)
-                shape[i - offset].copy().apply { or(row) }
+    fun collidesWith(shape: BitShape, offset: Long): Boolean = offset.withRaw { rawOffset ->
+        return content.subList(rawOffset, rawOffset + shape.height)
+            .filterIndexed { i, row -> row.intersects(shape[i]) }
+            .isNotEmpty()
+    }
+
+    fun addRestingShape(shape: BitShape, offset: Long) = offset.withRaw { rawOffset ->
+        for (i in rawOffset until (rawOffset + shape.height)) {
+            content[i].or(shape[i - rawOffset])
+        }
+    }
+
+    fun profile(): List<Int> = (1..fullWidth - 2)
+        .map { column -> content.indexOfLast { it[column] } }
+        .let { profile ->
+            val minHeight = profile.min()
+            profile.map { it - minHeight }
+        }
+
+    fun encode(shape: BitShape, offset: Long): String = offset.withRaw { rawOffset ->
+        return content.mapIndexed { rawIndex, row ->
+            val orRow = if (rawIndex in rawOffset until rawOffset + shape.height)
+                shape[rawIndex - rawOffset].copy().apply { or(row) }
             else row
 
-            i.toString().padStart(4) + " " +
+            val index = rawIndex + heightOffset
+
+            "$index " +
                 (0 until fullWidth).map { j ->
                     when {
                         row[j] && orRow[j] -> '#'
@@ -59,4 +72,13 @@ internal class BitChamber(internalWidth: Int) {
         }
             .asReversed()
             .joinToString("\n")
+    }
+
+    fun addHeightOffset(value: Long) {
+        heightOffset += value
+    }
+
+    private inline fun <T> Long.withRaw(block: (Int) -> T): T {
+        return block((this - heightOffset).toInt())
+    }
 }

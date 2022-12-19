@@ -2,29 +2,59 @@ package ceejay.advent.day17
 
 import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
+import java.util.Objects.hash
 
 internal class ShapeDropper(
-    width: Int,
+    private val width: Int,
     private val shapes: List<Shape>,
+    private val jetPattern: List<Move>,
     override var debugEnabled: Boolean = false,
 ) : Debuggable {
-    private val bitChamber = BitChamber(width)
 
-    fun drop(shapeCount: Int, moves: List<Move>): BitChamber {
-        var moveCounter = 0
-        for (i in 0 until shapeCount) {
-            val shape = shapes[i % shapes.size]
+    fun drop(shapeCount: Long): BitChamber {
+        var jetIndex = 0
+        val bitChamber = BitChamber(width)
+        val history = ArrayDeque<Drop>()
+        var shapeIndex = 0L
+        while (shapeIndex < shapeCount) {
+            val shape = shapes[(shapeIndex % shapes.size).toInt()]
             bitChamber.makeSpaceFor(shape)
 
             var bitShape = BitShape(shape).padLeft(3)
             var bottomOffset = bitChamber.towerHeight() + 4
 
-            debug { "--- Shape $i incoming ---" }
+            debug { "--- Shape $shapeIndex incoming ---" }
             debug { bitChamber.encode(bitShape, bottomOffset) }
+
+            val drop = Drop(
+                shape = shape,
+                shapeCount = shapeIndex,
+                jetIndex = jetIndex,
+                chamberProfile = bitChamber.profile(),
+                towerHeight = bitChamber.towerHeight()
+            )
+
+            if (drop in history) {
+                // found a cycle
+                completeWithCycle(
+                    history = history,
+                    end = drop,
+                    shapeIndex = shapeIndex,
+                    shapeCount = shapeCount,
+                    bitChamber = bitChamber
+                )
+                break
+            }
+
+            history += drop
 
             while (true) {
                 // move laterally
-                val move = moves[moveCounter++ % moves.size]
+                val move = jetPattern[jetIndex++]
+                if (jetIndex == jetPattern.size) {
+                    jetIndex = 0
+                }
+
                 val shapeMatrixAfterMove = bitShape.shift(move)
 
                 if (!bitChamber.collidesWith(shapeMatrixAfterMove, offset = bottomOffset)) {
@@ -39,9 +69,56 @@ internal class ShapeDropper(
                     break
                 }
             }
+            ++shapeIndex
         }
         debug { "--- Final situation ---" }
         debug { bitChamber.encode(BitShape.empty, 0) }
         return bitChamber
+    }
+
+    private fun completeWithCycle(
+        history: MutableList<Drop>,
+        end: Drop,
+        shapeIndex: Long,
+        shapeCount: Long,
+        bitChamber: BitChamber,
+    ) {
+        val cycleIndex = history.indexOf(end)
+        val start = history[cycleIndex]
+        val cycleShapes = end.shapeCount - start.shapeCount
+        val cycleHeight = end.towerHeight - start.towerHeight
+
+        debug { "--- Cycle (# shapes = $cycleShapes, height = $cycleHeight) --- " }
+
+        // number of fully applied cycles
+        val fullCycles = (shapeCount - shapeIndex) / cycleShapes
+
+        debug { "Fully repeated cycle $fullCycles times" }
+
+        // final cycle is applied partially, up to shapeCount shapes
+        val finalCycleShapes = shapeCount - shapeIndex - fullCycles * cycleShapes
+        val finalDrop = history[cycleIndex + finalCycleShapes.toInt()]
+        val finalCycleHeight = finalDrop.towerHeight - start.towerHeight
+
+        if (finalCycleShapes > 0) {
+            debug { "Partially applied last cycle up to $finalCycleShapes shapes" }
+        }
+
+        bitChamber.addHeightOffset(fullCycles * cycleHeight + finalCycleHeight)
+    }
+
+    private data class Drop(
+        val shape: Shape,
+        val shapeCount: Long,
+        val jetIndex: Int,
+        val chamberProfile: List<Int>,
+        val towerHeight: Long,
+    ) {
+        override fun equals(other: Any?): Boolean = other is Drop
+            && shape == other.shape
+            && jetIndex == other.jetIndex
+            && chamberProfile == other.chamberProfile
+
+        override fun hashCode(): Int = hash(shape, jetIndex, chamberProfile)
     }
 }
