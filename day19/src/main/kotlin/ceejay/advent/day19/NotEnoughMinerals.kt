@@ -8,7 +8,11 @@ fun main() {
 }
 
 fun part1(): Int = InputFile.withLines {
-    TODO()
+    map { Blueprint.parse(it) }
+        .sumOf { blueprint ->
+            val outcome = BlueprintExecutor(blueprint).findBestGeodeProducingPath(maxMinutes = 24)
+            outcome.geodes * blueprint.id
+        }
 }
 
 fun part2(): Int = InputFile.withLines {
