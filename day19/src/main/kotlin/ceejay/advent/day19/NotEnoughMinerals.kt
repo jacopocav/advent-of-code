@@ -16,5 +16,9 @@ fun part1(): Int = InputFile.withLines {
 }
 
 fun part2(): Int = InputFile.withLines {
-    TODO()
+    map { Blueprint.parse(it) }
+        .take(3)
+        .map { blueprint ->
+            BlueprintExecutor(blueprint).findBestGeodeProducingPath(maxMinutes = 32).geodes
+        }.reduce { a, b -> a * b }
 }

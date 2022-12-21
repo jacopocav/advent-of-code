@@ -22,6 +22,6 @@ object Day19Test {
         val actual = part2()
 
         // then
-        then(actual).isEqualTo(TODO())
+        then(actual).isEqualTo(13_640)
     }
 }

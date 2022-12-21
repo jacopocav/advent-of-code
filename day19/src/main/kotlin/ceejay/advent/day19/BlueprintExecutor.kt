@@ -1,24 +1,21 @@
 package ceejay.advent.day19
 
-import ceejay.advent.day19.Material.GEODE
-import ceejay.advent.day19.Material.ORE
-import ceejay.advent.util.enumMapOf
 import kotlin.math.ceil
 
 class BlueprintExecutor(private val blueprint: Blueprint) {
-    private val maxCosts = Material.all.associateWith { material ->
-        when (material) {
-            GEODE -> Int.MAX_VALUE
-            else -> blueprint.robotCosts.values.maxOf { cost -> cost[material] ?: 0 }
-        }
-    }.toMap(enumMapOf())
+    private val maxCosts = Counter(
+        ore = blueprint.robotCosts.values.maxOf { it.ore },
+        clay = blueprint.robotCosts.values.maxOf { it.clay },
+        obsidian = blueprint.robotCosts.values.maxOf { it.obsidian },
+        geode = Int.MAX_VALUE,
+    )
 
     fun findBestGeodeProducingPath(maxMinutes: Int): State {
         val queue = ArrayDeque<State>()
 
         queue += State(
-            resources = enumMapOf(),
-            robots = enumMapOf(ORE to 1),
+            resources = Counter(),
+            robots = Counter(ore = 1),
             minutesRemaining = maxMinutes,
         )
 
@@ -45,8 +42,7 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
         else -> robotCosts.mapNotNull { (producedMaterial, costs) ->
             when {
                 // don't need to build more robots of this kind
-                producedMaterial != GEODE
-                    && state.robots(producedMaterial) >= maxCosts[producedMaterial]!! -> null
+                state.robots[producedMaterial] >= maxCosts[producedMaterial] -> null
 
                 // can build the robot right now
                 state.canPay(costs) -> state.buildRobot(producedMaterial, costs)
@@ -56,13 +52,8 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
 
                 // can build the robot in the future
                 else -> {
-                    val waitMinutes = costs
-                        .filterKeys { state.canProduce(it) }
-                        .maxOf { (material, cost) ->
-                            val difference = cost - state.resources(material)
-                            val robots = state.robots(material)
-                            ceil(difference.toDouble() / robots).toInt()
-                        }
+
+                    val waitMinutes = ceil((costs - state.resources) maxDiv state.robots).toInt()
 
                     if (state.minutesRemaining - waitMinutes - 1 > 0)
                         state.wait(waitMinutes)
@@ -75,8 +66,8 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
 
     companion object {
         private val worstState = State(
-            resources = mapOf(GEODE to -1),
-            robots = mapOf(),
+            resources = Counter(geode = -1),
+            robots = Counter(),
             minutesRemaining = 0
         )
 
