@@ -41,11 +41,14 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
         0, 1 -> emptyList()
 
         else -> {
-            robotCosts[GEODE]!!.let {
-                // heuristic: if we can build a geode right now (not in the future),
-                // always do that instead of anything else
-                if (state.canPay(it)) listOf(state.buildRobot(GEODE, it))
-                else robotCosts.mapNotNull { (producedMaterial, costs) ->
+            robotCosts[GEODE]!!
+                .takeIf { state.canPay(it) }
+                ?.let { geodeCost ->
+                    // heuristic: if we can build a geode right now (not in the future),
+                    // always do that instead of anything else
+                    listOf(state.buildRobot(GEODE, geodeCost))
+                }
+                ?: robotCosts.mapNotNull { (producedMaterial, costs) ->
                     when {
                         // don't need to build more robots of this kind
                         state.robots[producedMaterial] >= maxCosts[producedMaterial] -> null
@@ -69,7 +72,6 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
                         }
                     }
                 }
-            }
         }
     }
 
