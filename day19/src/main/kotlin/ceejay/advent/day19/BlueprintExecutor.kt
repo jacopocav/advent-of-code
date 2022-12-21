@@ -1,5 +1,6 @@
 package ceejay.advent.day19
 
+import ceejay.advent.day19.Material.GEODE
 import kotlin.math.ceil
 
 class BlueprintExecutor(private val blueprint: Blueprint) {
@@ -39,26 +40,34 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
         // building in the last minute has no benefit: just wait
         0, 1 -> emptyList()
 
-        else -> robotCosts.mapNotNull { (producedMaterial, costs) ->
-            when {
-                // don't need to build more robots of this kind
-                state.robots[producedMaterial] >= maxCosts[producedMaterial] -> null
+        else -> {
+            robotCosts[GEODE]!!.let {
+                // heuristic: if we can build a geode right now (not in the future),
+                // always do that instead of anything else
+                if (state.canPay(it)) listOf(state.buildRobot(GEODE, it))
+                else robotCosts.mapNotNull { (producedMaterial, costs) ->
+                    when {
+                        // don't need to build more robots of this kind
+                        state.robots[producedMaterial] >= maxCosts[producedMaterial] -> null
 
-                // can build the robot right now
-                state.canPay(costs) -> state.buildRobot(producedMaterial, costs)
+                        // can build the robot right now
+                        state.canPay(costs) -> state.buildRobot(producedMaterial, costs)
 
-                // cannot build the robot, even in the future
-                !state.canPayInTheFuture(costs) -> null
+                        // cannot build the robot, even in the future
+                        !state.canPayInTheFuture(costs) -> null
 
-                // can build the robot in the future
-                else -> {
+                        // can build the robot in the future
+                        else -> {
 
-                    val waitMinutes = ceil((costs - state.resources) maxDiv state.robots).toInt()
+                            val waitMinutes =
+                                ceil((costs - state.resources) maxDiv state.robots).toInt()
 
-                    if (state.minutesRemaining - waitMinutes - 1 > 0)
-                        state.wait(waitMinutes)
-                            .buildRobot(producedMaterial, costs)
-                    else null
+                            if (state.minutesRemaining - waitMinutes - 1 > 0)
+                                state.wait(waitMinutes)
+                                    .buildRobot(producedMaterial, costs)
+                            else null
+                        }
+                    }
                 }
             }
         }

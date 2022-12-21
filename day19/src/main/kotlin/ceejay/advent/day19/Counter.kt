@@ -1,5 +1,7 @@
 package ceejay.advent.day19
 
+import ceejay.advent.day19.Material.*
+
 data class Counter(
     val ore: Int = 0,
     val clay: Int = 0,
@@ -8,10 +10,10 @@ data class Counter(
 ) {
 
     operator fun get(material: Material): Int = when (material) {
-        Material.ORE -> ore
-        Material.CLAY -> clay
-        Material.OBSIDIAN -> obsidian
-        Material.GEODE -> geode
+        ORE -> ore
+        CLAY -> clay
+        OBSIDIAN -> obsidian
+        GEODE -> geode
     }
 
     operator fun plus(other: Counter): Counter = Counter(
@@ -47,15 +49,16 @@ data class Counter(
             .max()
     }
 
-    infix fun allGreaterThanOrEqual(other: Counter): Boolean =
+    infix fun gte(other: Counter): Boolean =
         ore >= other.ore && clay >= other.clay && obsidian >= other.obsidian && geode >= other.geode
 
     companion object {
+
         fun ofMaterial(material: Material, amount: Int): Counter = when (material) {
-            Material.ORE -> Counter(ore = amount)
-            Material.CLAY -> Counter(clay = amount)
-            Material.OBSIDIAN -> Counter(obsidian = amount)
-            Material.GEODE -> Counter(geode = amount)
+            ORE -> Counter(ore = amount)
+            CLAY -> Counter(clay = amount)
+            OBSIDIAN -> Counter(obsidian = amount)
+            GEODE -> Counter(geode = amount)
         }
     }
 }

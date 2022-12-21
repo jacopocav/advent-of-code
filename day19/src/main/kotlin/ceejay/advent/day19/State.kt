@@ -8,7 +8,7 @@ data class State(
     val minutesRemaining: Int,
     val prev: State? = null,
 ) {
-    val geodes: Int get() = projected(GEODE)
+    val geodes: Int get() = resources[GEODE] + robots[GEODE] * minutesRemaining
     fun buildRobot(material: Material, costs: Counter): State = copy(
         minutesRemaining = minutesRemaining - 1,
         robots = robots + Counter.ofMaterial(material, 1),
@@ -27,12 +27,10 @@ data class State(
         else -> error("cannot wait negative minutes ($minutes)")
     }
 
-    fun canPay(costs: Counter): Boolean = resources allGreaterThanOrEqual costs
+    fun canPay(costs: Counter): Boolean = resources gte costs
 
     fun canPayInTheFuture(costs: Counter): Boolean =
-        (resources + robots * minutesRemaining) allGreaterThanOrEqual costs
-
-    fun projected(material: Material) = resources[material] + robots[material] * minutesRemaining
+        (resources + robots * minutesRemaining) gte costs
 
 
     private fun logSingle() = "$minutesRemaining -> resources=$resources robots=$robots"
