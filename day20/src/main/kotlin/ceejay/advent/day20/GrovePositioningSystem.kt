@@ -5,15 +5,15 @@ import ceejay.advent.util.TimedResult
 import ceejay.advent.util.timed
 
 fun main() {
-    part1().apply {
-        println("Part 1 Result: $result (total time: $time)")
+    part1().also {
+        println("Part 1 Result: $it")
     }
-    part2().apply {
-        println("Part 2 Result: $result (total time: $time)")
+    part2().also {
+        println("Part 2 Result: $it")
     }
 }
 
-data class Number(val originalIndex: Int, val value: Long, var moved: Boolean)
+data class Number(val originalIndex: Int, val value: Long, var moved: Boolean = false)
 
 fun part1(): TimedResult<Long> = InputFile.withLines {
     timed {
@@ -38,7 +38,7 @@ fun part2(): TimedResult<Long> = InputFile.withLines {
 
 private fun Sequence<String>.toNumbers(distressSignal: Long = 1) =
     map { it.toLong() * distressSignal }
-        .mapIndexed { i, num -> Number(originalIndex = i, value = num, moved = false) }
+        .mapIndexed { i, num -> Number(originalIndex = i, value = num) }
         .toMutableList()
 
 private fun MutableList<Number>.run() {

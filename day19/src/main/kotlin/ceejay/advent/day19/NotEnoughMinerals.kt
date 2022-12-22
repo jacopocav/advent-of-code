@@ -4,11 +4,11 @@ import ceejay.advent.util.InputFile
 import ceejay.advent.util.timed
 
 fun main() {
-    part1().apply {
-        println("Part 1 Result: $result (total time: $time)")
+    part1().also {
+        println("Part 1 Result: $it")
     }
-    part2().apply {
-        println("Part 2 Result: $result (total time: $time)")
+    part2().also {
+        println("Part 2 Result: $it")
     }
 }
 
