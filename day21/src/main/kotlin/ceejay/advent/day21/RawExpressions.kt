@@ -8,5 +8,7 @@ data class RawBinary(
 ) : RawExpression
 
 data class RawLiteral(
-    val value: Long,
+    val value: Rational,
 ) : RawExpression
+
+object Variable : RawExpression

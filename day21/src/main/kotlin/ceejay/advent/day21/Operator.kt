@@ -1,6 +1,6 @@
 package ceejay.advent.day21
 
-enum class Operator(val char: Char, inline val function: (Long, Long) -> Long) {
+enum class Operator(val char: Char, inline val function: (Rational, Rational) -> Rational) {
     PLUS(char = '+', function = { a, b -> a + b }),
     MINUS(char = '-', function = { a, b -> a - b }),
     TIMES(char = '*', function = { a, b -> a * b }),
