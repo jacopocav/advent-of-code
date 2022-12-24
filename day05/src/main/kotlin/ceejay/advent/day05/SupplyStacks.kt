@@ -1,6 +1,7 @@
 package ceejay.advent.day05
 
 import ceejay.advent.util.InputFile
+import ceejay.advent.util.InputFile.newLine
 
 fun main() {
     println("Part 1 Result: ${part1()}")
@@ -18,14 +19,14 @@ fun part2(): String {
 internal fun run(crateCreator: (Cargo) -> Crate): String {
     val input = InputFile()
 
-    val parts = input.split("\n\n")
+    val parts = input.split("$newLine$newLine")
 
     assert(parts.size == 2)
 
     val cargo = Cargo.parse(parts[0])
     val crate = crateCreator(cargo)
 
-    val moves = parts[1].split("\n")
+    val moves = parts[1].split(newLine)
         .filter { it.isNotBlank() }
         .map { Move.parse(it) }
 

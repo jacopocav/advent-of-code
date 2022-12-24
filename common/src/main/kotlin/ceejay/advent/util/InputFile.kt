@@ -4,6 +4,7 @@ import java.io.FileNotFoundException
 
 object InputFile {
     const val defaultName = "input.txt"
+    val newLine: String = System.lineSeparator()
 
     operator fun invoke(name: String = defaultName): String {
         return ClassLoader.getSystemResourceAsStream(name)
