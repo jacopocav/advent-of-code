@@ -1,5 +1,8 @@
 package ceejay.advent.util
 
+import kotlin.math.abs
+
+@JvmRecord
 data class Vector2D(val x: Int, val y: Int) {
     operator fun unaryMinus() = this * -1
     operator fun plus(other: Vector2D) = vector(x = x + other.x, y = y + other.y)
@@ -10,6 +13,9 @@ data class Vector2D(val x: Int, val y: Int) {
     fun flip() = vector(x = y, y = x)
 
     override fun toString(): String = "($x, $y)"
+
+    infix fun adjacentTo(other: Vector2D) =
+        this != other && abs(x - other.x) <= 1 && abs(y - other.y) <= 1
 
     companion object {
         fun vector(x: Int, y: Int): Vector2D = Vector2D(x, y)
