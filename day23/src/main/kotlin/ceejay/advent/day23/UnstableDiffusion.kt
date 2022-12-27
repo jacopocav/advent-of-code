@@ -8,7 +8,7 @@ import ceejay.advent.util.Vector2D.Companion.vector
 import ceejay.advent.util.timed
 
 fun main() {
-//    ElfPositioning.debugEnabled = true
+    ElfPositioning.debugEnabled = false
     part1().also {
         println("Part 1 Result: $it")
     }
@@ -31,7 +31,7 @@ fun part2(): TimedResult<Int> = InputFile.withLines {
     }
 }
 
-private fun Sequence<String>.parse(): Collection<Vector2D> = flatMapIndexed { y, row ->
+private fun Sequence<String>.parse(): Set<Vector2D> = flatMapIndexed { y, row ->
     row.mapIndexedNotNull { x, cell ->
         if (cell == '#') vector(x, y) else null
     }

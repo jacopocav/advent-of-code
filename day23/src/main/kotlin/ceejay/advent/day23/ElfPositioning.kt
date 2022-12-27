@@ -11,44 +11,54 @@ infix fun Int.with(elves: Collection<Vector2D>) = Result(this, elves)
 
 object ElfPositioning : Debuggable {
     override var debugEnabled = false
-    fun moveElves(elves: Collection<Vector2D>, rounds: Int = Int.MAX_VALUE): Result {
-        var current = elves
+    fun moveElves(elves: Set<Vector2D>, rounds: Int = Int.MAX_VALUE): Result {
+        var current: Set<Vector2D> = elves
         val directions = ArrayDeque(listOf(N, S, W, E))
 
         repeat(rounds) { round ->
             debug { "--- Round ${round + 1} ---" }
-            val proposed = mutableMapOf<Vector2D, MutableList<Vector2D>>()
-            val new = mutableSetOf<Vector2D>()
+            val next = mutableSetOf<Vector2D>()
 
+            var moved = false
             for (elf in current) {
-                val adjacents = current.filter { elf adjacentTo it }
+                val adjacents = elf.neighbors().filterTo(mutableSetOf()) { it in current }
 
                 if (adjacents.isEmpty()) {
-                    new += elf
-                } else {
-                    directions.getRightDirection(elf, adjacents)?.move(elf)
-                        ?.let {
-                            proposed.getOrPut(it) { mutableListOf() }.add(elf)
-                        }
-                        ?: new.add(elf)
+                    // no need to move
+                    next += elf
+                    continue
                 }
+
+                val direction = directions.getRightDirection(elf, adjacents)
+
+                if (direction == null) {
+                    // can't move
+                    next += elf
+                    continue
+                }
+
+                val destination = direction.move(elf)
+
+                if (next.remove(destination)) {
+                    // collision -> the other elf must have come from the opposite direction
+                    // both go back to their previous position
+                    next += direction.move(destination)
+                    next += elf
+                } else {
+                    // no collision -> move successful
+                    moved = true
+                    next += destination
+                }
+
             }
 
-            if (proposed.isEmpty()) {
+            assert(current.size == next.size)
+
+            if (!moved) {
                 return round + 1 with current
             }
 
-            for ((destination, sources) in proposed) {
-                if (sources.size == 1) {
-                    new += destination
-                } else {
-                    new += sources
-                }
-            }
-
-            assert(current.size == new.size)
-
-            current = new
+            current = next
 
             debug { current.toGrid() }
 
@@ -64,4 +74,15 @@ object ElfPositioning : Debuggable {
     ): Cardinal? = firstOrNull { elf.hasNoNeighbors(it, elves) }
 
     private fun ArrayDeque<Cardinal>.rotate() = addLast(removeFirst())
+
+    private fun Vector2D.neighbors() = setOf(
+        copy(x = x + 1),
+        copy(x = x - 1),
+        copy(y = y - 1),
+        copy(y = y + 1),
+        copy(x = x + 1, y = y + 1),
+        copy(x = x + 1, y = y - 1),
+        copy(x = x - 1, y = y - 1),
+        copy(x = x - 1, y = y + 1),
+    )
 }
