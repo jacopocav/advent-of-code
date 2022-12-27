@@ -1,9 +1,8 @@
 package ceejay.advent.day22
 
-import ceejay.advent.day22.Cell.FREE
-import ceejay.advent.day22.Direction.*
 import ceejay.advent.util.InputFile
 import ceejay.advent.util.TimedResult
+import ceejay.advent.util.Vector2D.Companion.vector
 import ceejay.advent.util.removeWhile
 import ceejay.advent.util.timed
 
@@ -11,36 +10,41 @@ fun main() {
     part1().also {
         println("Part 1 Result: $it")
     }
-//    part2().also {
-//        println("Part 2 Result: $it")
-//    }
+    part2().also {
+        println("Part 2 Result: $it")
+    }
 }
 
 fun part1(): TimedResult<Int> = InputFile.withLines {
-    timed {
-        val (cells, actions) = parse()
+    timed { run(CubeFace.fakeFacesOfSize(50)) }
+}
 
-        val map = Map(cells, cells.topLeftFreeCell())
+fun part2(): TimedResult<Int> = InputFile.withLines {
+    timed { run(CubeFace.realFacesOfSize(50)) }
+}
 
-        val (col, row, direction) = map.run(actions)
+private fun Sequence<String>.run(cubeFaces: Map<Int, CubeFace>): Int {
+    val (cells, actions) = parse()
 
-        val rowResult = 1000 * (row + 1)
-        val columnResult = 4 * (col + 1)
-        val directionResult = when (direction) {
-            RIGHT -> 0
-            DOWN -> 1
-            LEFT -> 2
-            UP -> 3
-        }
+    return with(CubeMap(cells, cubeFaces)) {
+        val result =
+            run(actions, cubeFaces.topLeftFace().id, DirectedVector(vector(0, 0), Right))
 
-        rowResult + columnResult + directionResult
+        result.score()
     }
 }
 
-fun part2(): TimedResult<Long> = InputFile.withLines {
-    timed {
-        TODO()
+private fun DirectedVector.score(): Int =
+    1000 * (vector.y + 1) + 4 * (vector.x + 1) + direction.score
+
+private fun Map<Int, CubeFace>.topLeftFace(): CubeFace {
+    var min = values.first()
+    for (face in values.drop(1)) {
+        if (face.topLeft.x < min.topLeft.x && face.topLeft.y < min.topLeft.y) {
+            min = face
+        }
     }
+    return min
 }
 
 private fun Sequence<String>.parse(): Pair<List<List<Cell>>, List<Action>> {
@@ -55,13 +59,6 @@ private fun List<String>.parseCells(): List<List<Cell>> {
     return map { it.padEnd(maxRowLength) }
         .map { line -> line.map { Cell.byChar(it) } }
 }
-
-private fun List<List<Cell>>.topLeftFreeCell(): Position =
-    map { row -> row.indexOfFirst { it == FREE } }.let { firstFreeCols ->
-        val (y, x) = firstFreeCols.withIndex().first { (_, col) -> col > -1 }
-        require(y > -1)
-        Position(x = x, y = y, direction = RIGHT)
-    }
 
 private fun String.parseActions(): List<Action> = buildList {
     val chars = this@parseActions.toMutableList()
