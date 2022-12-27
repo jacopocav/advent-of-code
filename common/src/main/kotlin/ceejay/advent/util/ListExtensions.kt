@@ -1,11 +1,12 @@
 package ceejay.advent.util
 
 inline fun <T> MutableList<T>.removeWhile(crossinline predicate: (T) -> Boolean): List<T> =
-    sequence {
-        while (isNotEmpty() && predicate(first())) {
-            yield(removeFirst())
+    buildList {
+        val outer = this@removeWhile
+        while (outer.isNotEmpty() && predicate(outer.first())) {
+            add(outer.removeFirst())
         }
-    }.toList()
+    }
 
 fun List<Char>.composeString(): String = joinToString("")
 
