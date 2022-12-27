@@ -18,11 +18,8 @@ fun main() {
 
 fun part1(): TimedResult<Int> = InputFile.withLines {
     timed {
-        val lines = toList()
-        val mapLines = lines.dropLast(1)
-        val actions = lines.takeLast(1).first().parseActions()
+        val (cells, actions) = parse()
 
-        val cells = mapLines.parseCells()
         val map = Map(cells, cells.topLeftFreeCell())
 
         val (col, row, direction) = map.run(actions)
@@ -46,6 +43,13 @@ fun part2(): TimedResult<Long> = InputFile.withLines {
     }
 }
 
+private fun Sequence<String>.parse(): Pair<List<List<Cell>>, List<Action>> {
+    val lines = toList()
+    val cells = lines.dropLast(1).parseCells()
+    val actions = lines.takeLast(1).first().parseActions()
+    return cells to actions
+}
+
 private fun List<String>.parseCells(): List<List<Cell>> {
     val maxRowLength = maxOf { it.length }
     return map { it.padEnd(maxRowLength) }
@@ -63,8 +67,8 @@ private fun String.parseActions(): List<Action> = buildList {
     val chars = this@parseActions.toMutableList()
     while (chars.isNotEmpty()) {
         when (val current = chars.removeFirst()) {
-            'L' -> add(Turn(LEFT))
-            'R' -> add(Turn(RIGHT))
+            'L' -> add(TurnLeft)
+            'R' -> add(TurnRight)
             else -> {
                 assert(current.isDigit())
                 val digits = listOf(current) + chars.removeWhile { it.isDigit() }

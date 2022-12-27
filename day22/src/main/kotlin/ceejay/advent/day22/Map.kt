@@ -46,23 +46,13 @@ class Map(
 
         for (action in actions) {
             position = when (action) {
-                is Turn -> turn(position, action.direction)
+                is TurnLeft -> position.copy(direction = position.direction.turnLeft())
+                is TurnRight -> position.copy(direction = position.direction.turnRight())
                 is Move -> move(position, action.steps)
             }
         }
 
         return position
-    }
-
-    private fun turn(
-        position: Position,
-        direction: Direction,
-    ): Position {
-        val newDirection =
-            if (direction == LEFT) position.direction.turnLeft()
-            else position.direction.turnRight()
-
-        return position.copy(direction = newDirection)
     }
 
     private fun move(initialPosition: Position, steps: Int): Position {
