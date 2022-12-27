@@ -19,14 +19,14 @@ fun main() {
 
 fun part1(): TimedResult<Int> = InputFile.withLines {
     timed {
-        val (_, elves) = parse().let { moveElves(elves = it, rounds = 10) }
+        val (_, elves) = moveElves(elves = parse(), rounds = 10)
         elves.score()
     }
 }
 
 fun part2(): TimedResult<Int> = InputFile.withLines {
     timed {
-        val (lastRound, _) = parse().let { moveElves(elves = it) }
+        val (lastRound, _) = moveElves(elves = parse())
         lastRound
     }
 }

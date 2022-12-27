@@ -11,45 +11,57 @@ infix fun Int.with(elves: Collection<Vector2D>) = Result(this, elves)
 
 object ElfPositioning : Debuggable {
     override var debugEnabled = false
-    private fun List<Cardinal>.firstCandidate(
-        elf: Vector2D,
-        elves: Collection<Vector2D>,
-    ): Cardinal? =
-        firstOrNull { elf.hasNoNeighbors(it, elves) }
-
     fun moveElves(elves: Collection<Vector2D>, rounds: Int = Int.MAX_VALUE): Result {
         var current = elves
         val directions = ArrayDeque(listOf(N, S, W, E))
 
         repeat(rounds) { round ->
             debug { "--- Round ${round + 1} ---" }
-            val proposed = mutableMapOf<Vector2D, Vector2D>()
+            val proposed = mutableMapOf<Vector2D, MutableList<Vector2D>>()
+            val new = mutableSetOf<Vector2D>()
 
             for (elf in current) {
                 val adjacents = current.filter { elf adjacentTo it }
 
-                proposed[elf] = if (adjacents.isEmpty()) {
-                    elf
+                if (adjacents.isEmpty()) {
+                    new += elf
                 } else {
-                    directions.firstCandidate(elf, adjacents)?.move(elf) ?: elf
+                    directions.getRightDirection(elf, adjacents)?.move(elf)
+                        ?.let {
+                            proposed.getOrPut(it) { mutableListOf() }.add(elf)
+                        }
+                        ?: new.add(elf)
                 }
             }
 
-            if (proposed.all { (from, to) -> from == to }) {
+            if (proposed.isEmpty()) {
                 return round + 1 with current
             }
 
-            assert(proposed.size == current.size)
-
-            current = proposed
-                .mapTo(mutableSetOf()) { (from, to) ->
-                    if (proposed.values.count { it == to } > 1) from else to
+            for ((destination, sources) in proposed) {
+                if (sources.size == 1) {
+                    new += destination
+                } else {
+                    new += sources
                 }
+            }
+
+            assert(current.size == new.size)
+
+            current = new
 
             debug { current.toGrid() }
-            directions.removeFirst().let { directions.addLast(it) }
+
+            directions.rotate()
         }
 
         return rounds with current
     }
+
+    private fun List<Cardinal>.getRightDirection(
+        elf: Vector2D,
+        elves: Collection<Vector2D>,
+    ): Cardinal? = firstOrNull { elf.hasNoNeighbors(it, elves) }
+
+    private fun ArrayDeque<Cardinal>.rotate() = addLast(removeFirst())
 }
