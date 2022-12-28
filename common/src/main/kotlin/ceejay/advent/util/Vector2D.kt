@@ -14,8 +14,10 @@ data class Vector2D(val x: Int, val y: Int) {
 
     override fun toString(): String = "($x, $y)"
 
-    infix fun adjacentTo(other: Vector2D) =
-        this != other && abs(x - other.x) <= 1 && abs(y - other.y) <= 1
+    /**
+     * Computes the Manhattan distance between `this` and [other]
+     */
+    infix fun manhattan(other: Vector2D): Int = abs(x - other.x) + abs(y - other.y)
 
     companion object {
         fun vector(x: Int, y: Int): Vector2D = Vector2D(x, y)
