@@ -9,22 +9,24 @@ fun main() {
     part1().also {
         println("Part 1 Result: $it")
     }
-//    part2().also {
-//        println("Part 2 Result: $it")
-//    }
+    part2().also {
+        println("Part 2 Result: $it")
+    }
 }
 
 fun part1(): TimedResult<Int> = InputFile.withLines {
     timed {
-        parse().apply { debugEnabled = false }.findShortestPath()
-            .also { println(it) }
-            .time
+        parse().apply { debugEnabled = false }.findShortestPathTime()
     }
 }
 
 fun part2(): TimedResult<Int> = InputFile.withLines {
     timed {
-        TODO()
+        val valley = parse().apply { debugEnabled = false }
+        val firstTripTime = valley.findShortestPathTime(startTime = 0)
+        val secondTripTime = valley.flipped.findShortestPathTime(startTime = firstTripTime)
+        val thirdTripTime = valley.findShortestPathTime(startTime = secondTripTime)
+        thirdTripTime
     }
 }
 
@@ -68,8 +70,8 @@ fun Sequence<String>.parse(): Valley {
     return Valley(
         start = start,
         end = end,
-        xMin = 1,
-        xMax = lines.first().length - 2,
-        blizzards = blizzards
+        xRange = 1..lines.first().length - 2,
+        yRange = 1..lines.size - 2,
+        blizzards = BlizzardCalculator(blizzards)
     )
 }

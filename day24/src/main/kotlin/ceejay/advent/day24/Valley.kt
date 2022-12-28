@@ -8,28 +8,32 @@ import java.util.Objects.hash
 class Valley(
     private val start: Vector2D,
     private val end: Vector2D,
-    private val xMin: Int,
-    private val xMax: Int,
-    blizzards: Collection<Blizzard>,
+    xRange: IntRange,
+    yRange: IntRange,
+    private val blizzards: BlizzardCalculator,
 ) : Debuggable {
     override var debugEnabled = false
 
-    private val yMin = start.y + 1
-    private val yMax = end.y - 1
+    private val xMin = xRange.min()
+    private val xMax = xRange.max()
+    private val yMin = yRange.min()
+    private val yMax = yRange.max()
 
-    private val blizzards = object {
-        private val blizzardSeq = mutableMapOf<Int, Set<Vector2D>>()
-        operator fun get(minute: Int): Set<Vector2D> =
-            blizzardSeq.computeIfAbsent(minute) {
-                blizzards.mapTo(mutableSetOf()) { it[minute] }
-            }
+    val flipped: Valley by lazy {
+        Valley(
+            start = end,
+            end = start,
+            xRange = xMin..xMax,
+            yRange = yMin..yMax,
+            blizzards = blizzards,
+        )
     }
 
     private fun Vector2D.heuristic() = manhattan(end)
 
-    fun findShortestPath(): Path {
+    fun findShortestPathTime(startTime: Int = 0): Int {
         val queue: PriorityQueue<Path> = PriorityQueue(compareBy { it.time + it.heuristic })
-        queue += Path(start, 0, start.heuristic())
+        queue += Path(start, startTime, start.heuristic())
 
         val visited = mutableSetOf<Pair<Vector2D, Int>>()
 
@@ -37,7 +41,7 @@ class Valley(
             val current = queue.remove()
 
             if (current.position == end) {
-                return current
+                return current.time
             }
 
             val nextTime = current.time + 1
@@ -75,11 +79,11 @@ class Valley(
             // move down
             copy(y = y + 1),
         ).filter {
-            it == end || (it.x in xMin..xMax && it.y in yMin..yMax)
+            it == end || it == start || (it.x in xMin..xMax && it.y in yMin..yMax)
         }
     }
 
-    data class Path(
+    private data class Path(
         val position: Vector2D,
         val time: Int,
         val heuristic: Int,
