@@ -1,7 +1,7 @@
 package ceejay.advent.day15
 
 import ceejay.advent.util.InputFile
-import ceejay.advent.util.Vector2D
+import ceejay.advent.util.Vector2D.Companion.vector
 import ceejay.advent.util.timed
 
 fun main() {
@@ -31,8 +31,8 @@ fun part2() = InputFile.useLines { lines ->
         val grid = Grid(sensorBeacons)
 
         val hiddenBeacon = grid.findFirstEmptyCellInRectangle(
-            minCoordinates = Vector2D(min, min),
-            maxCoordinates = Vector2D(max, max)
+            minCoordinates = vector(min, min),
+            maxCoordinates = vector(max, max)
         )
 
         hiddenBeacon.x * 4_000_000L + hiddenBeacon.y

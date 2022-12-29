@@ -8,7 +8,6 @@ data class Snafu(private val digits: List<Int>) {
     fun toLong(): Long = digits.toLong()
 
 
-    operator fun unaryMinus() = Snafu(digits.map { -it })
     override fun toString(): String = digits.asReversed()
         .map { reverseDigitMap[it]!! }
         .joinToString("")

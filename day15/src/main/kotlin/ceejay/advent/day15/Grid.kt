@@ -1,9 +1,14 @@
 package ceejay.advent.day15
 
+import ceejay.advent.day15.Grid.Line.Slope.ASCENDING
+import ceejay.advent.day15.Grid.Line.Slope.DESCENDING
 import ceejay.advent.util.Vector2D
+import ceejay.advent.util.Vector2D.Companion.vector
 import kotlin.collections.Map.Entry
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sign
 
 
 class Grid(sensors: Collection<SensorBeacon>) {
@@ -16,21 +21,14 @@ class Grid(sensors: Collection<SensorBeacon>) {
     private val beacons = sensors.map { it.beacon }.toSet()
 
     fun countExcludedInRow(y: Int): Int {
-        fun Entry<Vector2D, Int>.rangeAtY(): Int = let { (sensor, range) ->
-            max(0, range - abs(sensor.y - y) + 1)
-        }
-
-        fun Entry<Vector2D, Int>.hasInRange(x: Int) = let { (sensor, range) ->
-            x in (sensor.x - range + 1) until sensor.x + range
-        }
-
         val intersectingSensors = sensorRanges
-            .mapValues { it.rangeAtY() }
+            .mapValues { it.rangeAt(y) }
             .filterValues { it > 0 }
 
         assert(sensorRanges.filter { it.hasRowInRange(y) }.keys == intersectingSensors.keys)
 
-        val xMin = intersectingSensors.minOf { (sensor, rangeAtY) -> sensor.x - rangeAtY + 1 }
+        val xMin = intersectingSensors.minOfOrNull { (sensor, rangeAtY) -> sensor.x - rangeAtY + 1 }
+            ?: return 0
         val xMax = intersectingSensors.maxOf { (sensor, rangeAtY) -> sensor.x + rangeAtY - 1 }
 
         var count = 0
@@ -42,7 +40,7 @@ class Grid(sensors: Collection<SensorBeacon>) {
 
             mostExclusive?.let { (sensor, range) ->
                 val prev = x
-                x = sensor.x + range
+                x = min(xMax + 1, sensor.x + range)
                 count += (x - prev)
             }
 
@@ -58,32 +56,40 @@ class Grid(sensors: Collection<SensorBeacon>) {
         minCoordinates: Vector2D,
         maxCoordinates: Vector2D,
     ): Vector2D {
-        var column = minCoordinates.y
-        var row = minCoordinates.x
-
-        while (column <= maxCoordinates.x && row <= maxCoordinates.y) {
-            val coordinates = Vector2D(x = column, y = row)
-            val (sensor, range) = sensorRanges
-                .entries
-                .firstOrNull { coordinates in it }
-                ?: return coordinates
-
-            val rangeDifference =
-                range - abs(coordinates.y - sensor.y)
-            val sensorZoneWidth = 1 + 2 * rangeDifference
-            val nextCandidateColumn = sensor.x + (sensorZoneWidth / 2) + 1
-
-            column = if (nextCandidateColumn > maxCoordinates.x) {
-                row++
-                minCoordinates.x
-            } else {
-                nextCandidateColumn
-            }
+        // every sensor has 4 lines that delimit its area
+        // the empty cell must be at the intersection of these lines
+        val lines = sensorRanges.flatMapTo(mutableSetOf()) { (sensor, range) ->
+            listOf(
+                Line(ASCENDING, (sensor.y + range + 1) - sensor.x),
+                Line(ASCENDING, (sensor.y - range - 1) - sensor.x),
+                Line(DESCENDING, (sensor.y + range + 1) + sensor.x),
+                Line(DESCENDING, (sensor.y - range - 1) + sensor.x),
+            )
         }
-        throw IllegalArgumentException("no empty cell in range $minCoordinates - $maxCoordinates")
+
+        val (ascending, descending) = lines.partition { it.slope == ASCENDING }
+
+        val intersections = ascending.flatMapTo(mutableSetOf()) { asc ->
+            descending.mapNotNull { desc -> asc.intersectionWith(desc) }
+        }.filter { it.inRectangle(min = minCoordinates, max = maxCoordinates) }
+
+        return intersections.find { int -> sensorRanges.none { int in it } }
+            ?: error("no free ")
     }
 
     companion object {
+
+        private fun Vector2D.inRectangle(min: Vector2D, max: Vector2D): Boolean =
+            x in min.x..max.x && y in min.y..max.y
+
+        private fun Entry<Vector2D, Int>.rangeAt(y: Int): Int = let { (sensor, range) ->
+            max(0, range - abs(sensor.y - y) + 1)
+        }
+
+        private fun Entry<Vector2D, Int>.hasInRange(x: Int) = let { (sensor, range) ->
+            x in (sensor.x - range + 1) until sensor.x + range
+        }
+
         private operator fun Entry<Vector2D, Int>.contains(coordinates: Vector2D): Boolean =
             let { (sensor, range) ->
                 coordinates.manhattan(sensor) <= range
@@ -99,5 +105,44 @@ class Grid(sensors: Collection<SensorBeacon>) {
 
     data class SensorBeacon(val sensor: Vector2D, val beacon: Vector2D) {
         val range = sensor.manhattan(beacon)
+    }
+
+    /**
+     * 2d line in the form y = ax + b, where a can be only +1 or -1
+     */
+    data class Line(val slope: Slope, val offset: Int) {
+        operator fun get(x: Int): Int = slope.coefficient * x + offset
+        fun intersectionWith(other: Line): Vector2D? {
+            if (slope == other.slope) {
+                // lines are parallel -> no intersection
+                return null
+            }
+
+            val crossX = (other.offset - offset) / (slope.coefficient - other.slope.coefficient)
+
+            if (this[crossX] != other[crossX]) {
+                // intersection is decimal (exactly between two cells) -> no (integer) intersection
+                return null
+            }
+
+            val crossY = this[crossX]
+            return vector(crossX, crossY)
+        }
+
+        override fun toString(): String {
+            val bSign = offset.sign.let {
+                if (it >= 0) '+' else '-'
+            }
+            return "y = ${slope}x $bSign ${abs(offset)}"
+        }
+
+        enum class Slope(val coefficient: Int) {
+            ASCENDING(1), DESCENDING(-1);
+
+            override fun toString(): String = when (this) {
+                ASCENDING -> "+"
+                DESCENDING -> "-"
+            }
+        }
     }
 }
