@@ -4,7 +4,7 @@ import ceejay.advent.day14.Cave.Companion.Cell.ROCK
 import kotlin.math.max
 import kotlin.math.min
 
-internal object CaveParser {
+object CaveParser {
     fun parse(
         lines: Sequence<String>,
         sandSpawnPoint: Coordinates,

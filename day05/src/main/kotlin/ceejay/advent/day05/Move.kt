@@ -1,6 +1,6 @@
 package ceejay.advent.day05
 
-internal data class Move(val count: Int, val fromStack: Int, val toStack: Int) {
+data class Move(val count: Int, val fromStack: Int, val toStack: Int) {
 
     override fun toString(): String {
         return "move $count from $fromStack to $toStack"

@@ -1,6 +1,6 @@
 package ceejay.advent.day05
 
-internal class Cargo(private val stacks: List<Stack>) {
+class Cargo(private val stacks: List<Stack>) {
     operator fun get(index: Int): Stack {
         return stacks[index]
     }

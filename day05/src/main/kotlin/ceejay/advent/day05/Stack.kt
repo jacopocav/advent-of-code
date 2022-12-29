@@ -1,6 +1,6 @@
 package ceejay.advent.day05
 
-internal class Stack {
+class Stack {
     private val values: ArrayDeque<Char> = ArrayDeque()
 
     fun peek(): Char {

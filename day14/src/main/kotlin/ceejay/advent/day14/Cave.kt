@@ -5,7 +5,7 @@ import ceejay.advent.day14.Cave.Companion.Cell.SAND
 import ceejay.advent.day14.Cave.Companion.Status.IN_ABYSS
 import ceejay.advent.day14.Cave.Companion.Status.RESTING
 
-internal class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) {
+class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) {
     var spawnedSandUnits = 0
         private set
 

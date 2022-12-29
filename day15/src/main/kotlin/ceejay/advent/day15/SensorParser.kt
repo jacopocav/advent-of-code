@@ -2,7 +2,7 @@ package ceejay.advent.day15
 
 import ceejay.advent.day15.Grid.SensorBeacon
 
-internal object SensorParser {
+object SensorParser {
     private val lineRegex =
         "^Sensor at x=(?<sensorColumn>-?\\d+), y=(?<sensorRow>-?\\d+): closest beacon is at x=(?<beaconColumn>-?\\d+), y=(?<beaconRow>-?\\d+)$".toRegex()
 

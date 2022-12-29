@@ -1,6 +1,6 @@
 package ceejay.advent.day16
 
-internal fun Sequence<String>.parse(): Set<Valve> = map { it.parseValve() }.toSet()
+fun Sequence<String>.parse(): Set<Valve> = map { it.parseValve() }.toSet()
 
 private val valveRegex =
     "^Valve (?<name>[A-Z]+) has flow rate=(?<flowRate>\\d+); tunnels? leads? to valves? (?<connections>[A-Z]+(, [A-Z]+)*)$"

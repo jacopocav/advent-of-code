@@ -1,6 +1,6 @@
 package ceejay.advent.day02
 
-internal enum class Outcome(val code: String) {
+enum class Outcome(val code: String) {
     LOSE("X") {
         override fun getAnswerTo(opponentHand: Hand): Hand {
             return opponentHand.getWeakerHand()

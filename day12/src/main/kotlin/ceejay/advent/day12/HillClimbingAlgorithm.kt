@@ -3,7 +3,7 @@ package ceejay.advent.day12
 import ceejay.advent.util.InputFile
 import java.util.*
 
-internal typealias Graph = List<Node>
+typealias Graph = List<Node>
 
 fun main() {
     println("Part 1 Result: ${part1()}")

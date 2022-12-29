@@ -1,12 +1,12 @@
 package ceejay.advent.day13
 
 
-internal sealed interface Packet : Comparable<Packet> {
+sealed interface Packet : Comparable<Packet> {
     fun isList(): Boolean
     fun isNumber(): Boolean
 }
 
-internal data class NumberPacket(val value: Int) : Packet {
+data class NumberPacket(val value: Int) : Packet {
     override fun compareTo(other: Packet): Int = when (other) {
         is NumberPacket -> value compareTo other.value
         is ListPacket -> ListPacket(this) compareTo other
@@ -17,7 +17,7 @@ internal data class NumberPacket(val value: Int) : Packet {
     override fun isNumber(): Boolean = true
 }
 
-internal data class ListPacket(val content: List<Packet>) : Packet {
+data class ListPacket(val content: List<Packet>) : Packet {
     constructor(numberPacket: Packet) : this(listOf(numberPacket))
 
     override fun compareTo(other: Packet): Int = when (other) {

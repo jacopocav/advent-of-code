@@ -5,7 +5,7 @@ import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
 import java.util.*
 
-internal class MonkeyEngine(
+class MonkeyEngine(
     monkeys: List<Monkey>,
     override var debugEnabled: Boolean = false
 ) : Debuggable {

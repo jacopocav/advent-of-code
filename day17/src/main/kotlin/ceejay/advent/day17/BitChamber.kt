@@ -2,7 +2,7 @@ package ceejay.advent.day17
 
 import java.util.*
 
-internal class BitChamber(internalWidth: Int) {
+class BitChamber(internalWidth: Int) {
     private val fullWidth = internalWidth + 2
 
     private val content = mutableListOf(

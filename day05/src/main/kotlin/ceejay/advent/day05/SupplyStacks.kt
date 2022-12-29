@@ -16,7 +16,7 @@ fun part2(): String {
     return run(::Crate9001)
 }
 
-internal fun run(crateCreator: (Cargo) -> Crate): String {
+fun run(crateCreator: (Cargo) -> Crate): String {
     val input = InputFile()
 
     val parts = input.split("$newLine$newLine")

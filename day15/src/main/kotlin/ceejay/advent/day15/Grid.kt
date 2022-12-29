@@ -5,7 +5,7 @@ import kotlin.collections.Map.Entry
 import kotlin.math.abs
 
 
-internal class Grid(sensors: Collection<SensorBeacon>) {
+class Grid(sensors: Collection<SensorBeacon>) {
 
     private val sensorRanges: Map<Coordinates, Int> = sensors.groupingBy { it.sensor }
         .aggregate { _, _, sensorBeacon, first ->
@@ -74,7 +74,7 @@ internal class Grid(sensors: Collection<SensorBeacon>) {
             }
     }
 
-    internal data class SensorBeacon(val sensor: Coordinates, val beacon: Coordinates) {
+    data class SensorBeacon(val sensor: Coordinates, val beacon: Coordinates) {
         val range = sensor.manhattanDistanceFrom(beacon)
     }
 }

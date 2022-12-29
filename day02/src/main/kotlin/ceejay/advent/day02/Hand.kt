@@ -1,6 +1,6 @@
 package ceejay.advent.day02
 
-internal enum class Hand(val opponentCode: String, val myCode: String, private val score: Int) {
+enum class Hand(val opponentCode: String, val myCode: String, private val score: Int) {
     ROCK("A", "X", 1) {
         override fun getWeakerHand(): Hand {
             return SCISSORS

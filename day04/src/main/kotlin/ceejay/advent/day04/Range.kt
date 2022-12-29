@@ -1,6 +1,6 @@
 package ceejay.advent.day04
 
-internal data class Range(val minInclusive: Int, val maxInclusive: Int) {
+data class Range(val minInclusive: Int, val maxInclusive: Int) {
     operator fun contains(other: Range): Boolean {
         return minInclusive <= other.minInclusive
             && maxInclusive >= other.maxInclusive

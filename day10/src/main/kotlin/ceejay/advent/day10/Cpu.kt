@@ -1,6 +1,6 @@
 package ceejay.advent.day10
 
-internal class Cpu(
+class Cpu(
     startingRegisters: Map<String, Int>,
     private val components: Iterable<Component> = listOf()
 ) {
@@ -19,6 +19,6 @@ internal class Cpu(
     }
 }
 
-internal interface Component {
+interface Component {
     fun onClockTick(registers: Map<String, Int>)
 }

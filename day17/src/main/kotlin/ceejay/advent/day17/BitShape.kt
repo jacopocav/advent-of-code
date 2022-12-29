@@ -2,7 +2,7 @@ package ceejay.advent.day17
 
 import java.util.*
 
-internal class BitShape private constructor(private val matrix: List<BitSet>) {
+class BitShape private constructor(private val matrix: List<BitSet>) {
     constructor(shape: Shape) : this(shape.matrix())
 
     val height: Int get() = matrix.size

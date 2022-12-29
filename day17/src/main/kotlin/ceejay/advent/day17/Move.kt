@@ -1,6 +1,6 @@
 package ceejay.advent.day17
 
-internal enum class Move(val char: Char) {
+enum class Move(val char: Char) {
     LEFT('<'), RIGHT('>');
 
     companion object {

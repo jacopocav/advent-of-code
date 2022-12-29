@@ -3,7 +3,7 @@ package ceejay.advent.day11
 import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
 
-internal data class Monkey(
+data class Monkey(
     val id: Int,
     val startingItems: List<Long>,
     val operation: Operation,

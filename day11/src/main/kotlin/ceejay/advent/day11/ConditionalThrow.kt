@@ -2,7 +2,7 @@ package ceejay.advent.day11
 
 import ceejay.advent.util.isDivisibleBy
 
-internal sealed interface ConditionalThrow {
+sealed interface ConditionalThrow {
     fun getReceiverId(item: Long): Int
 
     fun test(item: Long): Boolean
@@ -38,7 +38,7 @@ internal sealed interface ConditionalThrow {
     }
 }
 
-internal data class DivisibilityThrow(
+data class DivisibilityThrow(
     val divisor: Long,
     private val trueReceiverId: Int,
     private val falseReceiverId: Int

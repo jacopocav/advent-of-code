@@ -1,7 +1,7 @@
 package ceejay.advent.day11
 
 
-internal sealed interface Operation {
+sealed interface Operation {
     val isNoOp: Boolean
 
     fun toList(): List<Operation>
@@ -20,7 +20,7 @@ internal sealed interface Operation {
     }
 }
 
-internal object Squared : Operation {
+object Squared : Operation {
     override val isNoOp = false
 
 
@@ -29,7 +29,7 @@ internal object Squared : Operation {
     override fun invoke(old: Long) = old * old
 }
 
-internal object NoOp : Operation {
+object NoOp : Operation {
     override val isNoOp = true
 
     override fun toList() = listOf(this)
@@ -37,7 +37,7 @@ internal object NoOp : Operation {
     override fun invoke(old: Long) = old
 }
 
-internal data class SimpleOperation(val operator: Operator, val operand: Long) : Operation {
+data class SimpleOperation(val operator: Operator, val operand: Long) : Operation {
 
     override fun invoke(old: Long) = operator.getNew(old, operand)
 
@@ -78,7 +78,7 @@ internal data class SimpleOperation(val operator: Operator, val operand: Long) :
     }
 }
 
-internal data class CompositeOperation(private val operations: List<Operation>) : Operation {
+data class CompositeOperation(private val operations: List<Operation>) : Operation {
     override val isNoOp: Boolean = operations.all { it.isNoOp }
 
     override fun toList() = operations

@@ -1,6 +1,6 @@
 package ceejay.advent.day12
 
-internal class Node(
+class Node(
     val id: Pair<Int, Int>,
     val edges: MutableSet<Node> = mutableSetOf(),
     val isStart: Boolean,

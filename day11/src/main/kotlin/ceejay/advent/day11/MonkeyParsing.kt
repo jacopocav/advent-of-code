@@ -5,7 +5,7 @@ import ceejay.advent.day11.MonkeyBuilder.Companion.operationPrefix
 import ceejay.advent.day11.MonkeyBuilder.Companion.startingItemsPrefix
 import ceejay.advent.util.removeWhile
 
-internal fun Sequence<String>.parse(
+fun Sequence<String>.parse(
     boredOperation: Operation,
     debugEnabled: Boolean = false
 ): List<Monkey> {

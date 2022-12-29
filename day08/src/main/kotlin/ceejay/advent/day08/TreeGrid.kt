@@ -1,6 +1,6 @@
 package ceejay.advent.day08
 
-internal class TreeGrid(private val grid: List<List<Int>>) {
+class TreeGrid(private val grid: List<List<Int>>) {
     private val xMax = (grid.getOrNull(0)?.size ?: 0) - 1
     private val yMax = grid.size - 1
     private val maxCoordinates = Coordinates(xMax, yMax)

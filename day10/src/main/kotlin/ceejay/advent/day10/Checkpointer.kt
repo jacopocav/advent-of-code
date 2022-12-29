@@ -1,6 +1,6 @@
 package ceejay.advent.day10
 
-internal class Checkpointer(vararg checkpointClocks: Int) : Component {
+class Checkpointer(vararg checkpointClocks: Int) : Component {
     private var clockCounter = 0
     private val mutableCheckpoints = mutableMapOf<Int, Map<String, Int>>()
     private val checkpointClocks = checkpointClocks.toSet()

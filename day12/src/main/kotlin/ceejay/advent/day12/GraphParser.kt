@@ -1,7 +1,7 @@
 package ceejay.advent.day12
 
 
-internal class GraphParser(
+class GraphParser(
     val validChars: Set<Char> = defaultValidChars,
     val heightMapper: (Char) -> Int = ::defaultHeight,
     val startChar: Char,

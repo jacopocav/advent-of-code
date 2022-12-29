@@ -2,7 +2,7 @@ package ceejay.advent.day09
 
 import kotlin.math.sign
 
-internal class MovementTracker(val knots: Int, val debug: Boolean = false) {
+class MovementTracker(val knots: Int, val debug: Boolean = false) {
     private val knotPositions = MutableList(knots) { Position.START }
     private val visitedByTail = mutableSetOf(Position.START)
     private var cnt = 0

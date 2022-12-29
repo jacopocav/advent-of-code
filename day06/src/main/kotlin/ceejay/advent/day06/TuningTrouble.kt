@@ -11,7 +11,7 @@ fun main() {
 fun part1(): Int = findFirstSubstringOfDistinctCharsOfLength(4)
 fun part2(): Int = findFirstSubstringOfDistinctCharsOfLength(14)
 
-internal fun findFirstSubstringOfDistinctCharsOfLength(substringLength: Int): Int {
+fun findFirstSubstringOfDistinctCharsOfLength(substringLength: Int): Int {
     val firstMarkerIndex = InputFile()
         .windowedSequence(substringLength)
         .indexOfFirst { it.toSet().size == substringLength }

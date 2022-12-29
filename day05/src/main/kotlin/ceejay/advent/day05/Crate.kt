@@ -1,11 +1,11 @@
 package ceejay.advent.day05
 
-internal interface Crate {
+interface Crate {
     val cargo: Cargo
     fun move(move: Move)
 }
 
-internal class Crate9000(override val cargo: Cargo) : Crate {
+class Crate9000(override val cargo: Cargo) : Crate {
     override fun move(move: Move) {
         val from = cargo[move.fromStack]
         val to = cargo[move.toStack]
@@ -17,7 +17,7 @@ internal class Crate9000(override val cargo: Cargo) : Crate {
     }
 }
 
-internal class Crate9001(override val cargo: Cargo) : Crate {
+class Crate9001(override val cargo: Cargo) : Crate {
     override fun move(move: Move) {
         val from = cargo[move.fromStack]
         val to = cargo[move.toStack]

@@ -1,6 +1,6 @@
 package ceejay.advent.day09
 
-internal object MovementParser {
+object MovementParser {
 
     fun parseLine(line: String): Sequence<Direction> {
         val split = line.split(" ")

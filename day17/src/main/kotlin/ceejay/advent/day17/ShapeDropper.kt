@@ -4,7 +4,7 @@ import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
 import java.util.Objects.hash
 
-internal class ShapeDropper(
+class ShapeDropper(
     private val width: Int,
     private val shapes: List<Shape>,
     private val jetPattern: List<Move>,

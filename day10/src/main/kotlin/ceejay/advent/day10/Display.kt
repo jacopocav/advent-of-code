@@ -3,7 +3,7 @@ package ceejay.advent.day10
 import ceejay.advent.util.isOdd
 import kotlin.math.abs
 
-internal class Display(
+class Display(
     private val width: Int,
     height: Int,
     private val spriteRegister: String,

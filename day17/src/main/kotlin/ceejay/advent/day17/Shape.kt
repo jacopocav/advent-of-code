@@ -2,7 +2,7 @@ package ceejay.advent.day17
 
 import java.util.*
 
-internal enum class Shape(private val matrix: List<BitSet>) {
+enum class Shape(private val matrix: List<BitSet>) {
     HOR_LINE(
         """
         ####

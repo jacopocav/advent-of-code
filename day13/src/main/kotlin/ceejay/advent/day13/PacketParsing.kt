@@ -4,7 +4,7 @@ import ceejay.advent.util.composeString
 import ceejay.advent.util.removeWhile
 
 object PacketParser {
-    internal fun parse(sequence: Sequence<String>): Sequence<Packet> =
+    fun parse(sequence: Sequence<String>): Sequence<Packet> =
         sequence.map { it.parsePacket() }
 
     private fun String.parsePacket(): Packet {
