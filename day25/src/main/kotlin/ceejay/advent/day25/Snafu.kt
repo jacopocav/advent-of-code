@@ -25,15 +25,13 @@ data class Snafu(private val digits: List<Int>) {
         private val reverseDigitMap = digitMap.entries.associate { (k, v) -> v to k }
 
         fun String.toSnafu(): Snafu {
-            val digits = map { digitMap[it] ?: error("unsupported character: $it") }
+            val digits = trimStart('0')
+                .map { digitMap[it] ?: error("unsupported character: $it") }
                 .reversed()
-                .trimTrailingZeroes()
             return Snafu(digits)
         }
 
         private fun List<Int>.toLong() = indices.sumOf { i -> this[i].toLong() * (5L pow i) }
-
-        private fun List<Int>.trimTrailingZeroes() = dropLastWhile { it == 0 }
 
         fun Long.toSnafu(): Snafu {
             val digits = toString(5).map { it.digitToInt() }.asReversed().toMutableList()

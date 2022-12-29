@@ -13,7 +13,7 @@ object Day16Test {
         val actual = part1()
 
         // then
-        then(actual).isEqualTo(1716)
+        then(actual.result).isEqualTo(1716)
     }
 
     @Test
@@ -22,6 +22,6 @@ object Day16Test {
         val actual = part2()
 
         // then
-        then(actual).isEqualTo(2504)
+        then(actual.result).isEqualTo(2504)
     }
 }

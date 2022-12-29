@@ -1,6 +1,6 @@
 package ceejay.advent.day16
 
-internal data class Path(
+data class Path(
     val currentValve: String,
     val totalRelievedPressure: Int,
     val elapsedMinutes: Int,
@@ -10,7 +10,7 @@ internal data class Path(
 
 private val worstPath = Path("<DUMMY>", Int.MIN_VALUE, Int.MAX_VALUE, setOf(), "<DUMMY>")
 
-internal fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path {
+fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path {
     val valveMap = associateBy { it.name }
     val startFlow = valveMap[startValve]!!.flow
 
@@ -25,12 +25,17 @@ internal fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path 
     ).toCollection(ArrayDeque())
 
     var best = worstPath
+    val bestRelievedByMinute = mutableMapOf<Int, Int>().withDefault { 0 }
 
     while (paths.isNotEmpty()) {
         val path = paths.removeFirst()
 
         if (path.totalRelievedPressure > best.totalRelievedPressure) {
             best = path
+        }
+
+        if (bestRelievedByMinute.getValue(path.elapsedMinutes) < path.totalRelievedPressure) {
+            bestRelievedByMinute[path.elapsedMinutes] = path.totalRelievedPressure
         }
 
         val currentValve = valveMap[path.currentValve]!!
@@ -42,13 +47,15 @@ internal fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path 
                 val newPressure =
                     path.totalRelievedPressure + (maxMinutes - elapsedAfterOpening) * valveMap[valve]!!.flow
 
-                paths += Path(
-                    currentValve = valve,
-                    totalRelievedPressure = newPressure,
-                    elapsedMinutes = elapsedAfterOpening,
-                    openedValves = path.openedValves + valve,
-                    pathString = path.pathString + "-$valve"
-                )
+                if (newPressure > bestRelievedByMinute.getValue(elapsedAfterOpening)) {
+                    paths += Path(
+                        currentValve = valve,
+                        totalRelievedPressure = newPressure,
+                        elapsedMinutes = elapsedAfterOpening,
+                        openedValves = path.openedValves + valve,
+                        pathString = path.pathString + "-$valve"
+                    )
+                }
             }
         }
     }
