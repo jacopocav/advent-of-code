@@ -1,6 +1,7 @@
 package ceejay.advent.day15
 
 import ceejay.advent.day15.Grid.SensorBeacon
+import ceejay.advent.util.Vector2D
 
 object SensorParser {
     private val lineRegex =
@@ -21,8 +22,8 @@ object SensorParser {
         val beaconRow = result.groups["beaconRow"]!!.value.toInt()
 
         return SensorBeacon(
-            sensor = Coordinates(column = sensorColumn, row = sensorRow),
-            beacon = Coordinates(column = beaconColumn, row = beaconRow)
+            sensor = Vector2D(x = sensorColumn, y = sensorRow),
+            beacon = Vector2D(x = beaconColumn, y = beaconRow)
         )
     }
 }

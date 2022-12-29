@@ -1,30 +1,40 @@
 package ceejay.advent.day15
 
 import ceejay.advent.util.InputFile
+import ceejay.advent.util.Vector2D
+import ceejay.advent.util.timed
 
 fun main() {
-    println("Part 1 Result: ${part1()}")
-    println("Part 2 Result: ${part2()}")
+    part1().also {
+        println("Part 1 Result: $it")
+    }
+    part2().also {
+        println("Part 2 Result: $it")
+    }
 }
 
-fun part1(): Int = InputFile.useLines { lines ->
-    val sensorBeacons = SensorParser.parse(lines)
-    val grid = Grid(sensorBeacons)
+fun part1() = InputFile.useLines { lines ->
+    timed {
+        val sensorBeacons = SensorParser.parse(lines)
+        val grid = Grid(sensorBeacons)
 
-    grid.countExcludedInRow(2_000_000)
+        grid.countExcludedInRow(2_000_000)
+    }
 }
 
-fun part2(): Long = InputFile.useLines { lines ->
-    val min = 0
-    val max = 4_000_000
+fun part2() = InputFile.useLines { lines ->
+    timed {
+        val min = 0
+        val max = 4_000_000
 
-    val sensorBeacons = SensorParser.parse(lines)
-    val grid = Grid(sensorBeacons)
+        val sensorBeacons = SensorParser.parse(lines)
+        val grid = Grid(sensorBeacons)
 
-    val hiddenBeacon = grid.findFirstEmptyCellInRectangle(
-        minCoordinates = Coordinates(min, min),
-        maxCoordinates = Coordinates(max, max)
-    )
+        val hiddenBeacon = grid.findFirstEmptyCellInRectangle(
+            minCoordinates = Vector2D(min, min),
+            maxCoordinates = Vector2D(max, max)
+        )
 
-    hiddenBeacon.column * 4_000_000L + hiddenBeacon.row
+        hiddenBeacon.x * 4_000_000L + hiddenBeacon.y
+    }
 }
