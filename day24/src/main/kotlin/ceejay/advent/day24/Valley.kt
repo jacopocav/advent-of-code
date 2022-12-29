@@ -98,7 +98,8 @@ class Valley(
             .toList()
             .asReversed()
             .zipWithNext { curr, next ->
-                "-->${curr.position}".repeat(next.time - curr.time)
+                "-->move${curr.position}" +
+                    "-->wait${curr.position}".repeat(next.time - curr.time - 1)
             }.joinToString("")
             .substringAfter("-->") + "-->$position"
     }

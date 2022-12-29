@@ -67,11 +67,18 @@ fun Sequence<String>.parse(): Valley {
         }
     }
 
+    val xRange = 1..lines.first().length - 2
+    val yRange = 1..lines.size - 2
+
     return Valley(
         start = start,
         end = end,
-        xRange = 1..lines.first().length - 2,
-        yRange = 1..lines.size - 2,
-        blizzards = BlizzardCalculator(blizzards)
+        xRange = xRange,
+        yRange = yRange,
+        blizzards = BlizzardCalculator(
+            initialPositions = blizzards,
+            xRange = xRange,
+            yRange = yRange
+        )
     )
 }

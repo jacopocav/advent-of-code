@@ -1,5 +1,7 @@
 package ceejay.advent.day21
 
+import ceejay.advent.util.gcd
+import ceejay.advent.util.lcm
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -73,9 +75,3 @@ data class Rational private constructor(val numerator: Long, val denominator: Lo
 
 fun Long.toRational() = Rational(this)
 fun Int.toRational() = toLong().toRational()
-
-// least common multiple
-fun lcm(a: Long, b: Long): Long = a * b / gcd(a, b)
-
-// greatest common divisor
-tailrec fun gcd(a: Long, b: Long): Long = if (b == 0L) a else gcd(b, a % b)
