@@ -17,56 +17,40 @@ data class Number(val originalIndex: Int, val value: Long, var moved: Boolean = 
 
 fun part1(): TimedResult<Long> = InputFile.withLines {
     timed {
-        val numbers = toNumbers()
-        numbers.run()
-        numbers.getResult()
+        toNumbers()
+            .mix()
+            .getFinalResult()
     }
 }
 
 fun part2(): TimedResult<Long> = InputFile.withLines {
     timed {
-        val numbers = toNumbers(distressSignal = 811589153)
-
-        repeat(10) {
-            numbers.run()
-            numbers.forEach { it.moved = false }
-        }
-
-        numbers.getResult()
+        toNumbers(distressSignal = 811589153)
+            .mix(times = 10)
+            .getFinalResult()
     }
 }
 
 private fun Sequence<String>.toNumbers(distressSignal: Long = 1) =
-    map { it.toLong() * distressSignal }
-        .mapIndexed { i, num -> Number(originalIndex = i, value = num) }
-        .toMutableList()
+    map { it.toLong() * distressSignal }.toList()
 
-private fun MutableList<Number>.run() {
-    val count = size
-
-    while (true) {
-        val number = filter { !it.moved && it.value != 0L }
-            .minByOrNull { it.originalIndex }
-            ?: break
-
-        val i = indexOf(number)
-
-        removeAt(i)
-
-        val shift = (i + number.value) % (count - 1)
-
-        val newIndex = if (shift < 0) count - 1 + shift else shift
-
-        add(newIndex.toInt(), number)
-        number.moved = true
+private fun List<Long>.mix(times: Int = 1): List<IndexedValue<Long>> =
+    this.withIndex().toMutableList().apply {
+        repeat(times) {
+            indices.forEach { index ->
+                val currentIndex = indexOfFirst { it.index == index }
+                val number = removeAt(currentIndex)
+                // a.mod(b) -> a % b     if a > 0
+                //          -> a % b + b if a < 0
+                add((currentIndex + number.value).mod(size), number)
+            }
+        }
     }
-}
 
-private fun List<Number>.getResult(): Long {
-    val result = map { it.value }
-    val zero = result.indexOf(0)
+private fun List<IndexedValue<Long>>.getFinalResult(): Long {
+    val zeroIndex = indexOfFirst { it.value == 0L }
 
-    return result[(zero + 1000) % result.size] +
-        result[(zero + 2000) % result.size] +
-        result[(zero + 3000) % result.size]
+    return this[(zeroIndex + 1000) % size].value +
+        this[(zeroIndex + 2000) % size].value +
+        this[(zeroIndex + 3000) % size].value
 }
