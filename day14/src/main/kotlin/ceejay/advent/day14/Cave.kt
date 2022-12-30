@@ -4,29 +4,61 @@ import ceejay.advent.day14.Cave.Companion.Cell.AIR
 import ceejay.advent.day14.Cave.Companion.Cell.SAND
 import ceejay.advent.day14.Cave.Companion.Status.IN_ABYSS
 import ceejay.advent.day14.Cave.Companion.Status.RESTING
+import ceejay.advent.util.Vector2D
 
-class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) {
+class Cave(private val grid: Grid, val sandSpawnPoint: Vector2D) {
     var spawnedSandUnits = 0
         private set
 
-    inline fun spawnSandUntil(predicate: (SandResult) -> Boolean) {
+    fun countSandUnitsUntilAbyssReached(): Int {
         var result = SandUnit().fall()
-        while (!predicate(result)) {
+        while (result != IN_ABYSS) {
             result = SandUnit().fall()
         }
+        return spawnedSandUnits - 1
     }
+
+    fun countCellsReachableBySand(): Int {
+        require(grid.hasFloor) { "cave has no floor, reachable cells are infinite" }
+
+        if (grid[sandSpawnPoint.x, sandSpawnPoint.y] != AIR) {
+            return 0
+        }
+
+        val queue = ArrayDeque<Vector2D>()
+        queue += sandSpawnPoint
+
+        var count = 0
+
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            count++
+
+            current.neighbors()
+                .filter { it !in queue }
+                .let { queue += it }
+        }
+
+        return count
+    }
+
+    private fun Vector2D.neighbors() = listOf(
+        copy(y = y + 1),
+        copy(x = x - 1, y = y + 1),
+        copy(x = x + 1, y = y + 1),
+    ).filter { grid[it.x, it.y] == AIR }
 
     inner class SandUnit {
         init {
             spawnedSandUnits++
         }
 
-        private var column = sandSpawnPoint.first
-        private var row = sandSpawnPoint.second
+        private var column = sandSpawnPoint.x
+        private var row = sandSpawnPoint.y
 
-        tailrec fun fall(): SandResult {
+        tailrec fun fall(): Status {
             if (grid.areAllAirBelow(column, row)) {
-                return SandResult(IN_ABYSS, column, Int.MAX_VALUE)
+                return IN_ABYSS
             }
 
             val nextNonAirRow = grid.nextNonAirCellRow(column, row)
@@ -49,7 +81,7 @@ class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) {
 
                 else -> {
                     grid[column, row] = SAND
-                    SandResult(RESTING, column, row)
+                    RESTING
                 }
             }
         }
@@ -57,7 +89,6 @@ class Cave(private val grid: Grid, val sandSpawnPoint: Pair<Int, Int>) {
     }
 
     companion object {
-        data class SandResult(val status: Status, val column: Int, val row: Int)
 
         enum class Status {
             RESTING, IN_ABYSS

@@ -6,7 +6,7 @@ import ceejay.advent.day14.Cave.Companion.Cell.*
 class Grid {
     private val nonTraversableColumns = mutableMapOf<Int, MutableMap<Int, Cell>>()
     private var floorRow: Int? = null
-    private val hasFloor: Boolean
+    val hasFloor: Boolean
         get() = floorRow != null
 
     fun addFloor(distanceFromLowestPoint: Int) {
