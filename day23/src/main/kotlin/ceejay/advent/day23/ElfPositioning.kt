@@ -4,6 +4,7 @@ import ceejay.advent.day23.Cardinal.*
 import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
 import ceejay.advent.util.Vector2D
+import ceejay.advent.util.mutableDequeOf
 
 data class Result(val lastRound: Int, val elves: Collection<Vector2D>)
 
@@ -13,7 +14,7 @@ object ElfPositioning : Debuggable {
     override var debugEnabled = false
     fun moveElves(elves: Set<Vector2D>, rounds: Int = Int.MAX_VALUE): Result {
         var current: Set<Vector2D> = elves
-        val directions = ArrayDeque(listOf(N, S, W, E))
+        val directions = mutableDequeOf(N, S, W, E)
 
         repeat(rounds) { round ->
             debug { "--- Round ${round + 1} ---" }

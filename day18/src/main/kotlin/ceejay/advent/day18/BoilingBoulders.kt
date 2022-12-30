@@ -2,6 +2,7 @@ package ceejay.advent.day18
 
 import ceejay.advent.util.InputFile
 import ceejay.advent.util.consume
+import ceejay.advent.util.mutableDequeOf
 
 fun main() {
     println("Part 1 Result: ${part1()}")
@@ -9,8 +10,8 @@ fun main() {
 }
 
 fun part1() = InputFile.withLines {
-    val voxels = map { Voxel.parse(it) }
-        .toCollection(ArrayDeque())
+    val voxels = mapTo(mutableDequeOf()) { Voxel.parse(it) }
+
     val adjacentCounters = voxels.associateWith { 0 }
         .toMutableMap()
     voxels.consume { cube ->

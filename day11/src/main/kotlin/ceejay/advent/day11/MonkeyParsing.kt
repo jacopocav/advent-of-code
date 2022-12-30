@@ -3,14 +3,14 @@ package ceejay.advent.day11
 import ceejay.advent.day11.MonkeyBuilder.Companion.conditionalThrowPrefix
 import ceejay.advent.day11.MonkeyBuilder.Companion.operationPrefix
 import ceejay.advent.day11.MonkeyBuilder.Companion.startingItemsPrefix
+import ceejay.advent.util.mutableDequeOf
 import ceejay.advent.util.removeWhile
 
 fun Sequence<String>.parse(
     boredOperation: Operation,
-    debugEnabled: Boolean = false
+    debugEnabled: Boolean = false,
 ): List<Monkey> {
-    val lineList = filter { it.isNotBlank() }
-        .toCollection(ArrayDeque())
+    val lineList = filterTo(mutableDequeOf()) { it.isNotBlank() }
 
     val monkeys = mutableListOf<Monkey>()
 
@@ -30,7 +30,7 @@ fun Sequence<String>.parse(
 private fun String.parseMonkey(
     rest: MutableList<String>,
     boredOperation: Operation,
-    debug: Boolean
+    debug: Boolean,
 ): Monkey =
     MonkeyBuilder()
         .apply {

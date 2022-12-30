@@ -5,6 +5,7 @@ import ceejay.advent.day14.Cave.Companion.Cell.SAND
 import ceejay.advent.day14.Cave.Companion.Status.IN_ABYSS
 import ceejay.advent.day14.Cave.Companion.Status.RESTING
 import ceejay.advent.util.Vector2D
+import ceejay.advent.util.mutableDequeOf
 
 class Cave(private val grid: Grid, val sandSpawnPoint: Vector2D) {
     var spawnedSandUnits = 0
@@ -25,8 +26,7 @@ class Cave(private val grid: Grid, val sandSpawnPoint: Vector2D) {
             return 0
         }
 
-        val queue = ArrayDeque<Vector2D>()
-        queue += sandSpawnPoint
+        val queue = mutableDequeOf(sandSpawnPoint)
 
         var count = 0
 

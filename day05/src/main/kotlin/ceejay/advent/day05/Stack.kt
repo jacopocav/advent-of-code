@@ -1,7 +1,9 @@
 package ceejay.advent.day05
 
+import ceejay.advent.util.mutableDequeOf
+
 class Stack {
-    private val values: ArrayDeque<Char> = ArrayDeque()
+    private val values = mutableDequeOf<Char>()
 
     fun peek(): Char {
         return values.first()

@@ -2,13 +2,14 @@ package ceejay.advent.day13
 
 import ceejay.advent.util.composeString
 import ceejay.advent.util.removeWhile
+import ceejay.advent.util.toMutableDeque
 
 object PacketParser {
     fun parse(sequence: Sequence<String>): Sequence<Packet> =
         sequence.map { it.parsePacket() }
 
     private fun String.parsePacket(): Packet {
-        val tokens = tokenize().toCollection(ArrayDeque())
+        val tokens = tokenize().toMutableDeque()
 
         require(tokens.removeFirst() is Token.Open) { "Top-level packet is not a list" }
         return tokens.parseListPacket()
@@ -28,8 +29,7 @@ object PacketParser {
 
     private fun String.tokenize(): List<Token> {
         val tokens = mutableListOf<Token>()
-        val chars = filterNot { it.isWhitespace() }
-            .toCollection(ArrayDeque())
+        val chars = filterNot { it.isWhitespace() }.toMutableDeque()
 
         while (chars.isNotEmpty()) {
             val char = chars.removeFirst()

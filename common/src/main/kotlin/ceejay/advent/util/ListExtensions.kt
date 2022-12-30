@@ -21,3 +21,16 @@ inline fun <T> MutableList<T>.consume(block: (T) -> Unit) {
         block(removeFirst())
     }
 }
+
+fun <T> mutableDequeOf(): ArrayDeque<T> = ArrayDeque()
+
+fun <T> mutableDequeOf(vararg elements: T): ArrayDeque<T> = ArrayDeque<T>()
+    .also { it += elements }
+
+fun <T> mutableDequeOf(elements: Iterable<T>): ArrayDeque<T> = ArrayDeque<T>()
+    .also { it += elements }
+
+fun <T> Iterable<T>.toMutableDeque() = toCollection(ArrayDeque())
+fun <T> Sequence<T>.toMutableDeque() = toCollection(ArrayDeque())
+
+fun String.toMutableDeque() = toCollection(ArrayDeque())

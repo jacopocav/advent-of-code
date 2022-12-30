@@ -1,5 +1,7 @@
 package ceejay.advent.day16
 
+import ceejay.advent.util.mutableDequeOf
+
 data class Path(
     val currentValve: String,
     val totalRelievedPressure: Int,
@@ -14,7 +16,7 @@ fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path {
     val valveMap = associateBy { it.name }
     val startFlow = valveMap[startValve]!!.flow
 
-    val paths = listOf(
+    val paths = mutableDequeOf(
         Path(
             currentValve = startValve,
             totalRelievedPressure = 0,
@@ -22,7 +24,7 @@ fun Set<Valve>.findBestPath(startValve: String, maxMinutes: Int): Path {
             openedValves = if (startFlow > 0) setOf(startValve) else setOf(),
             pathString = startValve
         )
-    ).toCollection(ArrayDeque())
+    )
 
     var best = worstPath
     val bestRelievedByMinute = mutableMapOf<Int, Int>().withDefault { 0 }

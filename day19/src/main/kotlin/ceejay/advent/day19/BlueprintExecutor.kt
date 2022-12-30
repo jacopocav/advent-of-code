@@ -1,6 +1,7 @@
 package ceejay.advent.day19
 
 import ceejay.advent.day19.Material.GEODE
+import ceejay.advent.util.mutableDequeOf
 import kotlin.math.ceil
 
 class BlueprintExecutor(private val blueprint: Blueprint) {
@@ -12,12 +13,12 @@ class BlueprintExecutor(private val blueprint: Blueprint) {
     )
 
     fun findBestGeodeProducingPath(maxMinutes: Int): State {
-        val queue = ArrayDeque<State>()
-
-        queue += State(
-            resources = Counter(),
-            robots = Counter(ore = 1),
-            minutesRemaining = maxMinutes,
+        val queue = mutableDequeOf(
+            State(
+                resources = Counter(),
+                robots = Counter(ore = 1),
+                minutesRemaining = maxMinutes,
+            )
         )
 
         var best = worstState

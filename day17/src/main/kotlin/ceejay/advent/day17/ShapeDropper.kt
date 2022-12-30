@@ -2,6 +2,7 @@ package ceejay.advent.day17
 
 import ceejay.advent.util.Debuggable
 import ceejay.advent.util.Debuggable.Companion.debug
+import ceejay.advent.util.mutableDequeOf
 import java.util.Objects.hash
 
 class ShapeDropper(
@@ -13,7 +14,7 @@ class ShapeDropper(
 
     fun drop(shapeCount: Long): BitChamber {
         val bitChamber = BitChamber(width)
-        val history = ArrayDeque<Drop>()
+        val history = mutableDequeOf<Drop>()
 
         var jetIndex = 0
         for (shapeIndex in 0 until shapeCount) {

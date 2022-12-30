@@ -1,13 +1,14 @@
 package ceejay.advent.day07
 
+import ceejay.advent.util.mutableDequeOf
+
 class FileTreeInterpreter {
     private val root: Directory = Directory(name = "/", parent = null)
     private var currentDirectory = root
 
     fun interpret(source: String): Directory {
         val lines = source.lineSequence()
-            .filter { it.isNotBlank() }
-            .toCollection(ArrayDeque())
+            .filterTo(mutableDequeOf()) { it.isNotBlank() }
 
         while (lines.isNotEmpty()) {
             val line = lines.removeFirst()
