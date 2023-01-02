@@ -1,29 +1,30 @@
-
 rootProject.name = "advent-of-code-2022"
 
-include("common")
-include("day01")
-include("day02")
-include("day03")
-include("day04")
-include("day05")
-include("day06")
-include("day07")
-include("day08")
-include("day09")
-include("day10")
-include("day11")
-include("day12")
-include("day13")
-include("day14")
-include("day15")
-include("day16")
-include("day17")
-include("day18")
-include("day19")
-include("day20")
-include("day21")
-include("day22")
-include("day23")
-include("day24")
-include("day25")
+include(
+    "common",
+    "day01",
+    "day02",
+    "day03",
+    "day04",
+    "day05",
+    "day06",
+    "day07",
+    "day08",
+    "day09",
+    "day10",
+    "day11",
+    "day12",
+    "day13",
+    "day14",
+    "day15",
+    "day16",
+    "day17",
+    "day18",
+    "day19",
+    "day20",
+    "day21",
+    "day22",
+    "day23",
+    "day24",
+    "day25"
+)

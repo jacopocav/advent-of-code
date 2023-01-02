@@ -2,10 +2,10 @@ package functional
 
 import ceejay.advent.day20.part1
 import ceejay.advent.day20.part2
-import org.assertj.core.api.BDDAssertions.then
-import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-object Day20Test {
+class Day20Test {
 
     @Test
     fun part1Test() {
@@ -13,7 +13,7 @@ object Day20Test {
         val actual = part1()
 
         // then
-        then(actual.result).isEqualTo(872)
+        assertEquals(872, actual.result)
     }
 
     @Test
@@ -22,6 +22,6 @@ object Day20Test {
         val actual = part2()
 
         // then
-        then(actual.result).isEqualTo(5_382_459_262_696)
+        assertEquals(5_382_459_262_696, actual.result)
     }
 }
